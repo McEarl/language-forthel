@@ -1,0 +1,118 @@
+# If this is your first time writing a language grammar, check out:
+#   - https://flight-manual.atom.io/hacking-atom/sections/creating-a-grammar/
+
+'scopeName'         : 'source.ftl'
+'name'              : 'ForTheL'
+'fileTypes'         : ['ftl']
+'patterns'          : [
+  {
+    # Comment
+    'match': '#.*$'
+    'name': 'comment'
+  }
+  {
+    # Instruction with string parameter
+    'match': '\\[(read|library|prover|provers|synonym)\\ (.*?)\\]'#
+    'name': 'keyword.other'
+  }
+  {
+    # Instruction with Boolean parameter
+    'match': '\\[(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation)\\ (on|off|yes|no)\\]'
+    'name': 'keyword.other'
+  }
+  {
+    # Instruction with integer parameter
+    'match': '\\[(timelimit|depthlimit|checktime|checkdepth)\\ [0-9]+\\]'
+    'name': 'keyword.other'
+  }
+  {
+    # Instruction without parameter
+    'match': '\\[(exit|quit|thesis|context|filter|rules)\\]'
+    'name': 'keyword.other'
+  }
+  {
+    # Set instruction flag to default value
+    'match': '\\[/?(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation|timelimit|depthlimit|checktime|checkdepth)\\]'
+    'name': 'keyword.other'
+  }
+  {
+    # Let ... denote ...
+    'match': '(Let\\ )(.*?)(\\ (denote|stand\\ for)\\ )(.*?)\\.'
+    'captures': {
+      '1': {'name': 'keyword.operator'}
+      '3': {'name': 'keyword.operator'}
+    }
+  }
+  {
+    # Definition, axiom, theorem etc. with name
+    'match': '(Definition|Signature|Axiom|Theorem|Lemma|Proposition|Corollary)(\\ [a-zA-Z0-9\\_]*)(\\.)'
+    'captures': {
+      '1': {'name': 'entity.name.section'}
+      '2': {'name': 'entity.name.tag'}
+    }
+  }
+  {
+    # Definition, axiom, theorem etc. without name
+    'match': '(Definition|Signature|Axiom|Theorem|Lemma|Proposition|Corollary)\\.'
+    'name': 'entity.name.section'
+  }
+  {
+    # And, or, iff, if, then, implies
+    'match': '\\b(and|or|iff|[Ii]f|then|implies)\\b'
+    'name': 'keyword.operator'
+  }
+  {
+    # =>, <=>, /\, \/, =, !=, -<-
+    'match': '(=>|<=>|/\\\\|\\\\/|\\!=|-<-)'
+    'name': 'keyword.operator'
+  }
+  {
+    # Indeed, proof, case, end, qed, obvious, trivial,
+    'match': '\\b(Indeed|[Pp]roof|Case|[Ee]nd|[Qq]ed|Obvious|Trivial)\\b'
+    'name': 'entity.name.section'
+  }
+  {
+    # Let us show that ...
+    'match': '(Let\\ us|We\\ can)\\ show\\ that\\ '
+    'name': 'entity.name.section'
+  }
+  {
+    # Let, assume, take, choose, consider, define
+    'match': '\\b(Let|Assume|[Tt]ake|[Cc]hoose|[Cc]onsider|[Dd]efine)\\b'
+    'name': 'variable.language'
+  }
+  {
+    # Contradiction, a notion, an atom, a relation, a constant
+    'match': '(\\b[Cc]ontradiction\\b)|(\\b(an?)\\b\\ \\b(notion|atom|relation|constant)\\b)'
+    'name': 'constant.language'
+  }
+  {
+    # forall/exists ... :
+    'match': '(\\b(forall|exists)\\b)(.*?)(:)'
+    'captures': {
+      '1': {'name': 'keyword.operator'}
+      '4': {'name': 'keyword.operator'}
+    }
+  }
+  {
+    # case ... ->
+    'match': '(\\bcase\\b)(.*?)(->)'
+    'captures': {
+      '1': {'name': 'variable.language'}
+      '3': {'name': 'variable.language'}
+    }
+  }
+  {
+    # Define ... for ... in
+    'match': '(\\bfor\\b\\ )([a-zA-Z]*)(\\ \\bin\\b)'
+    'captures': {
+      '1': {'name': 'variable.language'}
+      '3': {'name': 'variable.language'}
+    }
+  }
+  {
+    # (by ...)
+    'match': '(\\(by\\ )(.*?)(\\))'
+    'name': 'constant.language'
+  }
+]
