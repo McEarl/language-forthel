@@ -49,6 +49,14 @@
     'captures': {
       '1': {'name': 'entity.name.section'}
       '2': {'name': 'entity.name.tag'}
+      '5': {'name': 'constant.language'}
+    }
+  }
+  {
+    # Atom, relation, statement, constant notion
+    'match': '(\\bis\\b\\ an?\\ )(\\b(atom|relation|statement|constant|notion)\\b)(\\.)'
+    'captures': {
+      '2': {'name': 'constant.language'}
     }
   }
   {
@@ -67,7 +75,7 @@
     'name': 'keyword.operator'
   }
   {
-    # Indeed, proof, case, end, qed, obvious, trivial,
+    # Indeed, proof, case, end, qed, obvious, trivial
     'match': '\\b(Indeed|[Pp]roof|Case|[Ee]nd|[Qq]ed|Obvious|Trivial)\\b'
     'name': 'entity.name.section'
   }
@@ -82,8 +90,8 @@
     'name': 'variable.language'
   }
   {
-    # Contradiction, a notion, an atom, a relation, a constant
-    'match': '(\\b[Cc]ontradiction\\b)|(\\b(an?)\\b\\ \\b(notion|atom|relation|constant)\\b)'
+    # Contradiction
+    'match': '\\b[Cc]ontradiction\\b'
     'name': 'constant.language'
   }
   {
