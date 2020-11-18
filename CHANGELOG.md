@@ -11,6 +11,6 @@
   "naproche", "sad" and "naproche-sad".
 * Correct type in README
 
-## 0.2.0
+## 0.2.1
 * Enable highlighting of "suppose" and "assume"
 * Disable highlighting of "!=" and "-<-"
