@@ -3,7 +3,7 @@
   "main": "./lib/language-ftl",
   "version": "0.1.2",
   "description": "Adds syntax highlighting to ForTheL in Atom",
-  "keywords": [],
+  "keywords": ["forthel", "ftl", "naproche", "sad", "naproche-sad"],
   "activationCommands": {
     "atom-workspace": "language-ftl:toggle"
   },
