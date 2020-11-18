@@ -10,3 +10,7 @@
 * Add keywords: Now you can find the package if you search for "forthel", "ftl",
   "naproche", "sad" and "naproche-sad".
 * Correct type in README
+
+## 0.1.0
+* Enable highlighting of "suppose" and "assume"
+* Disable highlighting of "!=" and "-<-"
