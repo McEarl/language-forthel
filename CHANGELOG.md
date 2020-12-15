@@ -14,7 +14,7 @@
 * Enable highlighting of "suppose" and "assume"
 * Disable highlighting of "!=" and "-<-"
 
-## 0.3.0
+## 0.4.1
 * Clean up the present syntax highlighting
 * Add editor settings
 * Add snippets
