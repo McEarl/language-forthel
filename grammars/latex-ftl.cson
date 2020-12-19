@@ -1,0 +1,123 @@
+scopeName: 'source.latex-ftl'
+name: 'ForTheL (LaTeX mode)'
+fileTypes: [
+  'ftl',
+  'tex'
+]
+patterns: [
+  {
+    include: '#lineComment'
+  }
+  {
+    include: '#blockComment'
+  }
+  {
+    commment: 'forthel'
+    begin: '\\\\begin\\{forthel\\}'
+    beginCaptures:
+      0: name: 'markup.heading.latex-ftl'
+    end: '\\\\end\\{forthel\\}'
+    endCaptures:
+      0: name: 'markup.heading.latex-ftl'
+    patterns: [
+      {
+        include: '#lineComment'
+      }
+      {
+        include: '#inlineMath'
+      }
+      {
+        comment: 'case (low-level function definition)'
+        match: '(\\b[Cc]ase\\b)(.*?)(-\\ *>)'
+        captures:
+          1: name: 'support.function.latex-ftl'
+      }
+      {
+        comment: 'let, assume, suppose, presume, take, choose, consider, define'
+        match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume|[Tt]ake|[Cc]hoose|[Cc]onsider|[Dd]efine|[Ii]ndeed|[Qq][Ee][Dd]|[Ee][Nn][Dd]|[Oo]bvious|[Tt]rivial)\\b'
+        name: 'support.function.latex-ftl'
+      }
+      {
+        commment: 'top-level sections'
+        match: '\\\\(begin|end)\\{(theorem|proposition|lemma|corollary|axiom|definition|signature)\\}'
+        name: 'entity.name.section.latex-ftl'
+      }
+      {
+        commment: 'proofs and cases'
+        match: '\\\\(begin|end)\\{([Pp]roof|case)\\}'
+        name: 'entity.name.section.latex-ftl'
+      }
+      {
+        comment: 'instruction with string parameter'
+        match: '\\[(read|library|prover|provers|synonym)\\ (.*?)\\]'
+        name: 'variable.language.latex-ftl'
+      }
+      {
+        comment: 'instruction with Boolean parameter'
+        match: '\\[(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation)\\ (on|off|yes|no)\\]'
+        name: 'variable.language.latex-ftl'
+      }
+      {
+        comment: 'instruction with integer parameter'
+        match: '\\[(timelimit|depthlimit|checktime|checkdepth)\\ [0-9]+\\]'
+        name: 'variable.language.latex-ftl'
+      }
+      {
+        comment: 'instruction without parameter'
+        match: '\\[(exit|quit|thesis|context|filter|rules)\\]'
+        name: 'variable.language.latex-ftl'
+      }
+      {
+        comment: 'drop instruction'
+        match: '\\[/?(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation|timelimit|depthlimit|checktime|checkdepth)\\]'
+        name: 'variable.language.latex-ftl'
+      }
+    ]
+  }
+  {
+    commment: 'headings'
+    match: '(\\\\(((sub)?(sub)?(section|paragraph))|chapter)\\*?\\{.*?\\})'
+    name: 'markup.bold.latex-ftl'
+  }
+  {
+    include: '#inlineMath'
+  }
+  {
+    include: '#displayedMath'
+  }
+  {
+    include: '#equation'
+  }
+  {
+    include: '#latexCommand'
+  }
+]
+repository:
+  lineComment: {
+    match: '%.*$'
+    name: 'comment.line.latex-ftl'
+  }
+  blockComment: {
+    begin: '\\\\begin\\{comment\\}'
+    end: '\\\\end\\{comment\\}'
+    name: 'comment.block.latex-ftl'
+  }
+  latexCommand: {
+    match: '\\\\[a-zA-Z0-9]+'
+    name: 'storage.section.latex-ftl'
+  }
+  inlineMath: {
+    begin: '\\$'
+    end: '\\$'
+    name: 'markup.italic.latex-ftl.'
+  }
+  displayedMath: {
+    begin: '\\\\\\['
+    end: '\\\\\\]'
+    name: 'markup.italic.latex-ftl'
+  }
+  equation: {
+    begin: '\\\\begin\\{equation\\}'
+    end: '\\\\end\\{equation\\}'
+    name: 'markup.italic.latex-ftl'
+  }
