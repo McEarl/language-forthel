@@ -1,8 +1,0 @@
-'.source.ftl':
-  'editor':
-    'autoIndentOnPaste': true
-    'softTabs': true
-    'tabLength': 2
-    'preferredLineLength': 80
-    'increaseIndentPattern': '(\\b([Pp]roof|[Cc]ase)\\b)|((\\b[Ll]et\\b\\ +\\bus\\b|\\b[Ww]e\\b\\ +\\bcan\\b)\\ +\\bshow\\b(.*?)\\.)'
-    'decreaseIndentPattern': '\\b([Ee]nd|[Qq]ed|[Oo]bvious|[Tt]rivial)\\b'
