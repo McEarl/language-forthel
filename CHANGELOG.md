@@ -18,3 +18,7 @@
 * Clean up the present syntax highlighting
 * Add editor settings
 * Add snippets
+
+# 0.4.2
+* Rename instructions
+* Fix drop instruction
