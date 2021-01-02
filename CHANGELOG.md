@@ -28,3 +28,7 @@
 
 ## 0.5.0
 * Add syntax highlighting for ForTheL's LaTeX version
+
+## 0.5.1
+* Some fixes and minor internal changes
+* Add highlighting for URLs in ForTheL's LaTeX version
