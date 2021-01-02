@@ -1,6 +1,5 @@
 {
   "name": "language-forthel",
-  "main": "./lib/language-ftl",
   "version": "0.4.3",
   "description": "Adds syntax highlighting to ForTheL in Atom",
   "keywords": [
@@ -10,9 +9,6 @@
     "sad",
     "naproche-sad"
   ],
-  "activationCommands": {
-    "atom-workspace": "language-ftl:toggle"
-  },
   "repository": "https://github.com/McEarl/language-ftl",
   "license": "MIT",
   "engines": {
