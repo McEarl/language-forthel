@@ -1,5 +1,5 @@
 {
-  "name": "language-ftl",
+  "name": "language-forthel",
   "main": "./lib/language-ftl",
   "version": "0.4.2",
   "description": "Adds syntax highlighting to ForTheL in Atom",
