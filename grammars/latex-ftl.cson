@@ -1,5 +1,5 @@
 scopeName: 'source.latex-ftl'
-name: 'ForTheL (LaTeX mode)'
+name: 'ForTheL (LaTeX version)'
 fileTypes: [
   'tex.ftl'
 ]
@@ -84,6 +84,13 @@ patterns: [
     commment: 'headings'
     match: '(\\\\(((sub)?(sub)?(section|paragraph))|chapter)\\*?\\{.*?\\})'
     name: 'markup.bold.latex-ftl'
+  }
+  {
+    comment: 'URLs'
+    match: '(\\\\url)(\\{)(.*?)(\\})'
+    captures:
+      1: name: 'storage.section.latex-ftl'
+      3: name: 'markup.underline.link.latex-ftl'
   }
   {
     include: '#inlineMath'
