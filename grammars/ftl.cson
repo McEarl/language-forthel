@@ -10,28 +10,28 @@ patterns: [
     name: 'comment.ftl'
   }
   {
-    comment: 'instructions with string parameter'
+    comment: 'argument(s) instructions'
     match: '\\[\\ *(read|library|prover|provers|synonym)\\ *(.*?)\\ *\\]'
     name: 'variable.language.ftl'
   }
   {
-    comment: 'instructions with Boolean parameter'
+    comment: 'flag instructions'
     match: '\\[\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation)\\ *(on|off|yes|no)\\ *\\]'
     name: 'variable.language.ftl'
   }
   {
-    comment: 'instructions with integer parameter'
+    comment: 'limit instructions'
     match: '\\[\\ *(timelimit|depthlimit|checktime|checkdepth)\\ *[0-9]+\\ *\\]'
     name: 'variable.language.ftl'
   }
   {
-    comment: 'instructions without parameter'
+    comment: 'command instructions'
     match: '\\[\\ *(exit|quit|thesis|context|filter|rules)\\ *\\]'
     name: 'variable.language.ftl'
   }
   {
     comment: 'drop instructions'
-    match: '\\[\\ */?\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation|timelimit|depthlimit|checktime|checkdepth)\\ *\\]'
+    match: '\\[\\ */\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation|timelimit|depthlimit|checktime|checkdepth)\\ *\\]'
     name: 'variable.language.ftl'
   }
   {
