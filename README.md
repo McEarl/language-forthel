@@ -11,4 +11,12 @@ For more information about ForTheL have a look at the GitHub page of the
 some example texts that are written in ForTheL and also a lot of documents that
 describe ForTheL and Naproche-SAD.
 
-![A screenshot of language-ftl](screenshots/plain-forthel.png)
+
+## ForTheL's standard version
+
+![A screenshot of language-forthel (standard ForTheL)](screenshots/plain-forthel.png)
+
+
+## ForTheL's LaTeX version
+
+![A screenshot of language-forthel (LaTeX ForTheL)](screenshots/latex-forthel.png)
