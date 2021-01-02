@@ -19,6 +19,12 @@
 * Add editor settings
 * Add snippets
 
-# 0.4.2
+## 0.4.2
 * Rename instructions
 * Fix drop instruction
+
+## 0.4.3
+* Rename package to language-forthel
+
+## 0.5.0
+* Add syntax highlighting for ForTheL's LaTeX version
