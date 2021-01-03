@@ -32,3 +32,6 @@
 ## 0.5.1
 * Some fixes and minor internal changes
 * Add highlighting for URLs in ForTheL's LaTeX version
+
+## 0.5.2
+* Add readtex instruction
