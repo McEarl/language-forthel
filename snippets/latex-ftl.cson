@@ -132,6 +132,10 @@
     'prefix': 'read'
     'body': '\\[read $1\\]'
 
+  'readtex':
+    'prefix': 'readtex'
+    'body': '\\[readtex $1\\]'
+
   'library':
     'prefix': 'library'
     'body': '\\[library $1\\]'

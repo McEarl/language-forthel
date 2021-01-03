@@ -55,7 +55,7 @@ patterns: [
       }
       {
         comment: 'argument(s) instruction'
-        match: '\\[(read|library|prover|provers|synonym)\\ (.*?)\\]'
+        match: '\\[(read|readtex|library|prover|provers|synonym)\\ (.*?)\\]'
         name: 'variable.language.latex-ftl'
       }
       {
