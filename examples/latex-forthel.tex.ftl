@@ -24,8 +24,7 @@
       Case x is empty. Obvious.
 
       Case x is nonempty.
-        Assume the contrary. Take a surjection $f$ from x onto the powerset of
-        x$
+        Assume the contrary. Take a surjection f from x onto the powerset of x.
 
         (1) Define N = {u in x | u is not an element of f(u)}.
 
