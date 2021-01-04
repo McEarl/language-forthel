@@ -35,3 +35,6 @@
 
 ## 0.5.2
 * Add readtex instruction
+
+## 0.5.3
+* Fix LaTeX example
