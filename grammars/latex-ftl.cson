@@ -23,13 +23,16 @@ patterns: [
         include: '#lineComment'
       }
       {
+        include: '#inlineMath'
+      }
+      {
         comment: 'let us show'
         match: '((\\b[Ll]et\\b\\ +\\bus\\b)|(\\b[Ww]e\\b\\ +\\bcan\\b))\\ +(\\b(show|prove|demonstrate)\\b)'
         name: 'entity.name.section.latex-ftl'
       }
       {
-        comment: 'do not highlight "Proof by..." and "case analysis"'
-        match: '(\\b[Pp]roof\\b\\ +\\bby\\b)|(\\bcase\\b\\ +\\banalysis\\b)'
+        comment: 'do not highlight "case" in "proof by case analysis"'
+        match: '\\bcase\\b\\ +\\banalysis\\b'
         name: 'meta.latex-ftl'
       }
       {
