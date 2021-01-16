@@ -38,3 +38,6 @@
 
 ## 0.5.3
 * Fix LaTeX example
+
+## 0.5.4
+* Add math mode to ForTheL environments
