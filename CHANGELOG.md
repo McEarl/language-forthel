@@ -41,3 +41,6 @@
 
 ## 0.5.4
 * Add math mode to ForTheL environments
+
+## 0.5.5
+* Fix inline math in case splits in function definitions
