@@ -37,9 +37,14 @@ patterns: [
       }
       {
         comment: 'case (low-level function definition)'
-        match: '(\\b[Cc]ase\\b)(.*?)(-\\ *>)'
+        match: '(\\b[Cc]ase\\b)([^%]*?)(-\\ *>)'
         captures:
           1: name: 'support.function.latex-ftl'
+          2: patterns: [
+              {
+                include: '#inlineMath'
+              }
+            ]
       }
       {
         comment: 'let, assume, suppose, presume, take, choose, consider, define'
