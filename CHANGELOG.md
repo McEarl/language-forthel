@@ -44,3 +44,6 @@
 
 ## 0.5.5
 * Fix inline math in case splits in function definitions
+
+## 0.5.6
+* Improve LaTeX code in example file
