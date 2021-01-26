@@ -47,3 +47,6 @@
 
 ## 0.5.6
 * Improve LaTeX code in example file
+
+## 0.5.7
+* Change file name extension for LaTeX-ForTheL files from .tex.ftl to .ftl.tex
