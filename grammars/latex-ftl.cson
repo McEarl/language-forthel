@@ -1,7 +1,7 @@
 scopeName: 'source.latex-ftl'
 name: 'ForTheL (LaTeX version)'
 fileTypes: [
-  'tex.ftl'
+  'ftl.tex'
 ]
 patterns: [
   {
