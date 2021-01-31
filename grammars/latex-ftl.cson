@@ -23,7 +23,10 @@ patterns: [
         include: '#lineComment'
       }
       {
-        include: '#inlineMath'
+        include: '#forthelMath'
+      }
+      {
+        include: '#linebreak'
       }
       {
         comment: 'let us show'
@@ -42,7 +45,7 @@ patterns: [
           1: name: 'support.function.latex-ftl'
           2: patterns: [
               {
-                include: '#inlineMath'
+                include: '#forthelMath'
               }
             ]
       }
@@ -112,6 +115,9 @@ patterns: [
   {
     include: '#latexCommand'
   }
+  {
+    include: '#linebreak'
+  }
 ]
 repository:
   lineComment: {
@@ -132,6 +138,26 @@ repository:
     end: '\\$'
     name: 'markup.italic.latex-ftl.'
   }
+  forthelMath: {
+    begin: '\\$'
+    end: '\\$'
+    name: 'markup.italic.latex-ftl.'
+    patterns: [
+      {
+        comment: 'key symbols'
+        match: '(\\\\forall)|(\\\\exists)|(\\\\wedge)|(\\\\vee)|(\\\\implies)|(\\\\iff)'
+        name: 'constant.latex-ftl'
+      },
+      {
+        comment: 'class terms'
+        match: '(\\\\\\{)(.*?)(:|\\\\mid)(.*?)(\\\\\\})'
+        captures:
+          1: name: 'constant.latex-ftl'
+          3: name: 'constant.latex-ftl'
+          5: name: 'constant.latex-ftl'
+      }
+    ]
+  }
   displayedMath: {
     begin: '\\\\\\['
     end: '\\\\\\]'
@@ -141,4 +167,8 @@ repository:
     begin: '\\\\begin\\{equation\\}'
     end: '\\\\end\\{equation\\}'
     name: 'markup.italic.latex-ftl'
+  }
+  linebreak : {
+    match: '\\\\\\\\'
+    name: 'constant.latex-ftl'
   }
