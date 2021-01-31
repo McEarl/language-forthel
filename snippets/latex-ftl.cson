@@ -1,5 +1,13 @@
 '.source.latex-ftl':
 
+  'forthel':
+    'prefix': 'forthel'
+    'body': """
+      \\\\begin\\{forthel\\}
+        $1
+      \\\\end\\{forthel\\}
+    """
+
   # Top-level sections
 
   'definition':
