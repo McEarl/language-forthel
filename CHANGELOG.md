@@ -50,3 +50,11 @@
 
 ## 0.5.7
 * Change file name extension for LaTeX-ForTheL files from .tex.ftl to .ftl.tex
+
+## 0.5.8
+* Add snippet for ForTheL environment in LaTeX mode
+
+## 0.5.9
+* Apply new ForTheL standards to examples
+* Add highlighting for logical symbols and class terms
+* Add highlighting for linebreaks (LaTeX mode)
