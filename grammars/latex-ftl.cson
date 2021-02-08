@@ -133,17 +133,10 @@ repository:
     name: 'markup.italic.latex-ftl.'
     patterns: [
       {
-        comment: 'key symbols'
-        match: '(\\\\forall)|(\\\\exists)|(\\\\wedge)|(\\\\vee)|(\\\\implies)|(\\\\iff)'
-        name: 'constant.latex-ftl'
+        include: '#logicalSymbols'
       },
       {
-        comment: 'class terms'
-        match: '(\\\\\\{)(.*?)(:|\\\\mid)(.*?)(\\\\\\})'
-        captures:
-          1: name: 'constant.latex-ftl'
-          3: name: 'constant.latex-ftl'
-          5: name: 'constant.latex-ftl'
+        include: '#classTerm'
       }
     ]
   }
@@ -157,7 +150,26 @@ repository:
     end: '\\\\end\\{equation\\}'
     name: 'markup.italic.latex-ftl'
   }
-  linebreak : {
+  linebreak: {
     match: '\\\\\\\\'
     name: 'constant.latex-ftl'
+  }
+  logicalSymbols: {
+    match: '(\\\\forall)|(\\\\exists)|(\\\\wedge)|(\\\\vee)|(\\\\implies)|(\\\\iff)'
+    name: 'constant.latex-ftl'
+  }
+  classTerm: {
+    match: '(\\\\\\{)(.*?)(:|\\\\mid)(.*?)(\\\\\\})'
+    captures:
+      1: name: 'constant.latex-ftl'
+      3: name: 'constant.latex-ftl'
+      4: patterns: [
+        {
+          include: '#logicalSymbols'
+        },
+        {
+          include: '#classTerm'
+        }
+      ]
+      5: name: 'constant.latex-ftl'
   }
