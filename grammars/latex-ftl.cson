@@ -1,175 +1,24 @@
 scopeName: 'source.latex-ftl'
 name: 'ForTheL (LaTeX version)'
-fileTypes: [
-  'ftl.tex'
-]
+fileTypes: [ 'ftl.tex' ]
 patterns: [
   {
-    include: '#lineComment'
-  }
-  {
-    include: '#blockComment'
-  }
-  {
-    commment: 'forthel'
-    begin: '\\\\begin\\{forthel\\}'
+    commment: 'ForTheL environment (picked up from language-latex2e)'
+    begin: '((\\\\)begin)(\\{)(forthel)(\\})'
     beginCaptures:
-      0: name: 'markup.heading.latex-ftl'
-    end: '\\\\end\\{forthel\\}'
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(forthel)(\\})'
     endCaptures:
-      0: name: 'markup.heading.latex-ftl'
-    patterns: [
-      {
-        include: '#lineComment'
-      }
-      {
-        include: '#forthelMath'
-      }
-      {
-        include: '#linebreak'
-      }
-      {
-        comment: 'let us show'
-        match: '((\\b[Ll]et\\b\\ +\\bus\\b)|(\\b[Ww]e\\b\\ +\\bcan\\b))\\ +(\\b(show|prove|demonstrate)\\b)'
-        name: 'entity.name.section.latex-ftl'
-      }
-      {
-        comment: 'do not highlight "case" in "proof by case analysis"'
-        match: '\\bcase\\b\\ +\\banalysis\\b'
-        name: 'meta.latex-ftl'
-      }
-      {
-        comment: 'let, assume, suppose, presume, take, choose, consider, define'
-        match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume|[Tt]ake|[Cc]hoose|[Cc]onsider|[Dd]efine)\\b'
-        name: 'support.function.latex-ftl'
-      }
-      {
-        commment: 'top-level sections and top-level proofs'
-        match: '\\\\(begin|end)\\{(theorem|proposition|lemma|corollary|axiom|definition|signature|proof)\\}'
-        name: 'entity.name.section.latex-ftl'
-      }
-      {
-        commment: 'low-level proofs and cases'
-        match: '\\b([Pp]roof|[Cc]ase|[Ii]ndeed|[Qq][Ee][Dd]|[Ee][Nn][Dd]|[Oo]bvious|[Tt]rivial)\\b'
-        name: 'entity.name.section.latex-ftl'
-      }
-      {
-        comment: 'argument(s) instruction'
-        match: '\\[(read|readtex|library|prover|provers|synonym)\\ (.*?)\\]'
-        name: 'variable.language.latex-ftl'
-      }
-      {
-        comment: 'flag instruction'
-        match: '\\[(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation)\\ (on|off|yes|no)\\]'
-        name: 'variable.language.latex-ftl'
-      }
-      {
-        comment: 'limit instruction'
-        match: '\\[(timelimit|depthlimit|checktime|checkdepth)\\ [0-9]+\\]'
-        name: 'variable.language.latex-ftl'
-      }
-      {
-        comment: 'command instruction'
-        match: '\\[(exit|quit|thesis|context|filter|rules)\\]'
-        name: 'variable.language.latex-ftl'
-      }
-      {
-        comment: 'drop instruction'
-        match: '\\[\\ */\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation|timelimit|depthlimit|checktime|checkdepth)\\]'
-        name: 'variable.language.latex-ftl'
-      }
-    ]
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.forthel' }]
   }
-  {
-    commment: 'headings'
-    match: '(\\\\(((sub)?(sub)?(section|paragraph))|chapter)\\*?\\{.*?\\})'
-    name: 'markup.bold.latex-ftl'
-  }
-  {
-    comment: 'URLs'
-    match: '(\\\\url)(\\{)(.*?)(\\})'
-    captures:
-      1: name: 'storage.section.latex-ftl'
-      3: name: 'markup.underline.link.latex-ftl'
-  }
-  {
-    include: '#inlineMath'
-  }
-  {
-    include: '#displayedMath'
-  }
-  {
-    include: '#equation'
-  }
-  {
-    include: '#latexCommand'
-  }
-  {
-    include: '#linebreak'
-  }
+  { include: 'text.tex.latex' }
 ]
-repository:
-  lineComment: {
-    match: '%.*$'
-    name: 'comment.line.latex-ftl'
-  }
-  blockComment: {
-    begin: '\\\\begin\\{comment\\}'
-    end: '\\\\end\\{comment\\}'
-    name: 'comment.block.latex-ftl'
-  }
-  latexCommand: {
-    match: '\\\\[a-zA-Z0-9]+'
-    name: 'storage.section.latex-ftl'
-  }
-  inlineMath: {
-    begin: '\\$'
-    end: '\\$'
-    name: 'markup.italic.latex-ftl.'
-  }
-  forthelMath: {
-    begin: '\\$'
-    end: '\\$'
-    name: 'markup.italic.latex-ftl.'
-    patterns: [
-      {
-        include: '#logicalSymbols'
-      },
-      {
-        include: '#classTerm'
-      }
-    ]
-  }
-  displayedMath: {
-    begin: '\\\\\\['
-    end: '\\\\\\]'
-    name: 'markup.italic.latex-ftl'
-  }
-  equation: {
-    begin: '\\\\begin\\{equation\\}'
-    end: '\\\\end\\{equation\\}'
-    name: 'markup.italic.latex-ftl'
-  }
-  linebreak: {
-    match: '\\\\\\\\'
-    name: 'constant.latex-ftl'
-  }
-  logicalSymbols: {
-    match: '(\\\\forall)|(\\\\exists)|(\\\\wedge)|(\\\\vee)|(\\\\implies)|(\\\\iff)'
-    name: 'constant.latex-ftl'
-  }
-  classTerm: {
-    match: '(\\\\\\{)(.*?)(:|\\\\mid)(.*?)(\\\\\\})'
-    captures:
-      1: name: 'constant.latex-ftl'
-      3: name: 'constant.latex-ftl'
-      4: patterns: [
-        {
-          include: '#logicalSymbols'
-        },
-        {
-          include: '#classTerm'
-        }
-      ]
-      5: name: 'constant.latex-ftl'
-  }
