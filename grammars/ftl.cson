@@ -1,8 +1,6 @@
 scopeName: 'source.ftl'
 name: 'ForTheL (standard version)'
-fileTypes: [
-  'ftl'
-]
+fileTypes: [ 'ftl' ]
 patterns: [
   {
     comment: 'comments'
@@ -37,16 +35,14 @@ patterns: [
   {
     comment: 'top-level section'
     match: '([Dd]efinition|[Ss]ignature|[Aa]xiom|[Tt]heorem|[Ll]emma|[Pp]roposition|[Cc]orollary)(\\ +[a-zA-Z0-9\\_]*)?(\\ *)(\\.)'
-    captures: {
+    captures:
       1: name: 'entity.name.section.ftl'
-    }
   }
   {
     comment: 'case (low-level function definition)'
     match: '(\\b[Cc]ase\\b)(.*?)(-\\ *>)'
-    captures: {
+    captures:
       1: name: 'support.function.ftl'
-    }
   }
   {
     comment: 'let, assume, suppose, presume, take, choose, consider, define'
@@ -56,9 +52,8 @@ patterns: [
   {
     comment: 'proofs'
     match: '(\\b[Pp]roof\\b)((\\ +by\\ +)(case\\ +analysis|induction|contradiction))?(\\ *\\.)'
-    captures: {
+    captures:
       1: name: 'entity.name.section.ftl'
-    }
   }
   {
     comment: 'indeed, case, end, qed, obvious, trivial'
@@ -83,10 +78,9 @@ patterns: [
   {
     comment: 'class terms'
     match: '(\\{)(.*?)(:|\\|)(.*?)(\\})'
-    captures: {
+    captures:
       1: name: 'constant.ftl'
       3: name: 'constant.ftl'
       5: name: 'constant.ftl'
-    }
   }
 ]
