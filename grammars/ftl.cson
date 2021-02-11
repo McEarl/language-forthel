@@ -70,17 +70,4 @@ patterns: [
     match: '\\\\\\b[a-zA-Z0-9]+\\b'
     name: 'keyword.other.ftl'
   }
-  {
-    comment: 'logical symbols'
-    match: '/\\\\|\\\\/|<=>|=>'
-    name: 'constant.ftl'
-  }
-  {
-    comment: 'class terms'
-    match: '(\\{)(.*?)(:|\\|)(.*?)(\\})'
-    captures:
-      1: name: 'constant.ftl'
-      3: name: 'constant.ftl'
-      5: name: 'constant.ftl'
-  }
 ]
