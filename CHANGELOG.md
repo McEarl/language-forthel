@@ -58,3 +58,6 @@
 * Apply new ForTheL standards to examples
 * Add highlighting for logical symbols and class terms
 * Add highlighting for linebreaks (LaTeX mode)
+
+## 1.0.0
+* Embed LaTeX-ForTheL into the package language-latex2e
