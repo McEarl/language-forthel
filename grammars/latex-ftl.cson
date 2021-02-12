@@ -1,6 +1,8 @@
 scopeName: 'source.latex-ftl'
 name: 'ForTheL (LaTeX version)'
 fileTypes: [ 'ftl.tex' ]
+limitLineLength: false
+maxTokensPerLine: 300
 patterns: [
   {
     commment: 'ForTheL environment (picked up from language-latex2e)'
