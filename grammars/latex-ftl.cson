@@ -1,4 +1,4 @@
-scopeName: 'source.latex-ftl'
+scopeName: 'text.tex.latex.latex-ftl'
 patterns: [
   { include: 'text.tex.latex#metaPercent' }
   { include: 'text.tex.latex#doubleBackslash' }
