@@ -3,20 +3,44 @@
 Adds syntax highlighting to ForTheL in Atom
 
 ForTheL is a natural formal language for writing mathematical texts which can be
-checked with the proof assistant
-[Naproche-SAD](https://files.sketis.net/Isabelle_Naproche-20190611/).
-
-For more information about ForTheL have a look at the GitHub page of the
-[Naproche Community](https://github.com/naproche-community). There you will find
-some example texts that are written in ForTheL and also a lot of documents that
-describe ForTheL and Naproche-SAD.
+checked with the proof assistant ℕaproche. Since 2021 ℕaproche supports
+embedding ForTheL into LaTeX.
 
 
-## ForTheL's standard version
+## Usage
+
+This package supports both ForTheL's standard version and its LaTeX version.
+
+* Syntax highlighting for ForTheL's standard version works out of the box.
+
+* To use syntax highlighting for ForTheL's LaTeX version, you must additionally
+  install the package [language-latex2e](https://atom.io/packages/language-latex2e).
+  Moreover, you may need to disable all other syntax highlighting packages for
+  LaTeX.
+
+
+## Screenshots
+
+### Standard version:
 
 ![A screenshot of language-forthel (standard ForTheL)](screenshots/plain-forthel.png)
 
 
-## ForTheL's LaTeX version
+### LaTeX version:
 
 ![A screenshot of language-forthel (LaTeX ForTheL)](screenshots/latex-forthel.png)
+
+
+## Links
+
+* ℕaproche's GitHub repository:  
+  <https://github.com/naproche-community/naproche>
+
+* FLib, a collection of ForTheL texts:  
+  <https://github.com/naproche-community/FLib>
+
+* Slides of ℕaproche-related talks:  
+  <https://github.com/naproche-community/Talks>
+
+* Isabelle2021-RC5, which comes with an integration of ℕaproche:  
+  <https://isabelle.sketis.net/website-Isabelle2021-RC5/>
