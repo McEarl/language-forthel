@@ -1,439 +1,264 @@
-'.source.latex-ftl':
-
-  'forthel':
-    'prefix': 'forthel'
-    'body': """
-      \\\\begin\\{forthel\\}
-        $1
-      \\\\end\\{forthel\\}
-    """
-
-  # Top-level sections
-
-  'definition':
-    'prefix': 'definition'
-    'body': """
-      \\\\begin\\{definition\\}$1
-        $2
-      \\\\end\\{definition\\}
-    """
-
-  'signature':
-    'prefix': 'signature'
-    'body': """
-      \\\\begin\\{signature\\}$1
-        $2
-      \\\\end\\{signature\\}
-    """
-
-  'axiom':
-    'prefix': 'axiom'
-    'body': """
-      \\\\begin\\{axiom\\}$1
-        $2
-      \\\\end\\{axiom\\}
-    """
-
-  'theorem':
-    'prefix': 'theorem'
-    'body': """
-      \\\\begin\\{theorem\\}$1
-        $2
-      \\\\end\\{theorem\\}
-    """
-
-  'lemma':
-    'prefix': 'lemma'
-    'body': """
-      \\\\begin\\{lemma\\}$1
-        $2
-      \\\\end\\{lemma\\}
-    """
-
-  'proposition':
-    'prefix': 'proposition'
-    'body': """
-      \\\\begin\\{proposition\\}$1
-        $2
-      \\\\end\\{proposition\\}
-    """
-
-  'corollary':
-    'prefix': 'corollary'
-    'body': """
-      \\\\begin\\{corollary\\}$1
-        $2
-      \\\\end\\{corollary\\}
-    """
-
+'.text.tex.latex':
 
   # Proofs
 
-  'top-level proof':
-    'prefix': 'tlproof'
-    'body': """
-      \\\\begin\\{proof\\}
-        $1
-      \\\\end\\{proof\\}
-    """
-
   'low-level proof':
-    'prefix': 'llproof'
+    'prefix': 'proof'
     'body': """
-      Proof\\.
-        $1
+      Proof$1\\.
+        $2
       end\\.
     """
-
   'case':
     'prefix': 'case'
     'body': """
-      Case\\.
-        $1
+      Case ${1:condition}\\.
+        $2
       end\\.
     """
-
   'reference':
-    'prefix': 'reference'
-    'body': '\\(by $1\\)'
-
-
-  # Declarations
-
-  'let \\.\\.\\. denote':
-    'prefix': 'let-denote'
-    'body': 'Let $1 denote $2\\.'
-
-  'let \\.\\.\\. stand for':
-    'prefix': 'let-stand-for'
-    'body': 'Let $1 stand for $2\\.'
+    'prefix': 'ref'
+    'body': '\\(by ${1:label}\\)$2'
 
 
   # Low-level definitions
 
-  'set definition':
-    'prefix': 'def-set'
-    'body': 'Define $1 = \\{$2 \\| $3\\}\\.'
-
+  'class definition':
+    'prefix': 'class'
+    'body': 'Define ${1:X} = \\\\\\{ ${2:x} \\\\mid ${3:\\\\phi(x)} \\\\\\}\\.$4'
   'function definition':
-    'prefix': 'def-fun'
-    'body': 'Define $1\\[$2\\] = $3 for $4 in $5\\.'
-
-  'function case':
-    'prefix': 'case-fun'
-    'body': 'case $1 -> $2'
-
-  'function choice':
-    'prefix': 'choose-fun'
-    'body': 'choose $1 in $2'
-
+    'prefix': 'fun'
+    'body': 'Define ${1:f}\\(${2:x}\\) = ${3:y} for ${2:x} in ${4:X}\\.$5'
+  'choice':
+    'prefix': 'choose'
+    'body': 'choose ${1:u} in ${2:t}'
   'lambda abstraction':
-    'prefix': 'lambda-fun'
-    'body': '\\\\$1 in $2\\. $3'
+    'prefix': 'lambda'
+    'body': '\\\\fun ${1:x} in ${2:X}\\. ${3:y}'
 
 
-# Instructions
-
-## String instructions
+  # Instructions
 
   'read':
     'prefix': 'read'
-    'body': '\\[read $1\\]'
-
+    'body': 'read ${1:file.ftl}'
   'readtex':
     'prefix': 'readtex'
-    'body': '\\[readtex $1\\]'
-
+    'body': 'readtex ${1:file.ftl.tex}'
   'library':
     'prefix': 'library'
-    'body': '\\[library $1\\]'
-
+    'body': 'library ${1:directory}'
   'prover':
     'prefix': 'prover'
-    'body': '\\[prover $1\\]'
-
+    'body': 'prover ${1:prover}'
   'provers':
     'prefix': 'provers'
-    'body': '\\[provers $1\\]'
-
+    'body': 'provers ${1:database}'
   'synonym':
     'prefix': 'synonym'
-    'body': '\\[synonym $1\\]'
-
-
-## Bool instructions
+    'body': 'synonym ${1:words}'
 
   'prove':
     'prefix': 'prove'
-    'body': '\\[prove ${1:on}\\]'
-
+    'body': 'prove ${1:on}'
   'check':
     'prefix': 'check'
-    'body': '\\[check ${1:on}\\]'
-
+    'body': 'check ${1:on}'
   'symsign':
     'prefix': 'symsign'
-    'body': '\\[symsign ${1:on}\\]'
-
+    'body': 'symsign ${1:on}'
   'info':
     'prefix': 'info'
-    'body': '\\[info ${1:on}\\]'
-
+    'body': 'info ${1:on}'
   'skipfail':
     'prefix': 'skipfail'
-    'body': '\\[skipfail ${1:off}\\]'
-
+    'body': 'skipfail ${1:off}'
   'flat':
     'prefix': 'flat'
-    'body': '\\[flat ${1:off}\\]'
-
+    'body': 'flat ${1:off}'
   'printgoal':
     'prefix': 'printgoal'
-    'body': '\\[printgoal ${1:on}\\]'
-
+    'body': 'printgoal ${1:on}'
   'printsection':
     'prefix': 'printsection'
-    'body': '\\[printsection ${1:off}\\]'
-
+    'body': 'printsection ${1:off}'
   'printcheck':
     'prefix': 'printcheck'
-    'body': '\\[printcheck ${1:off}\\]'
-
+    'body': 'printcheck ${1:off}'
   'printunfold':
     'prefix': 'printunfold'
-    'body': '\\[printunfold ${1:off}\\]'
-
+    'body': 'printunfold ${1:off}'
   'printreason':
     'prefix': 'printreason'
-    'body': '\\[printreason ${1:off}\\]'
-
+    'body': 'printreason ${1:off}'
   'printprover':
     'prefix': 'printprover'
-    'body': '\\[printprover ${1:off}\\]'
-
+    'body': 'printprover ${1:off}'
   'printfulltask':
     'prefix': 'printfulltask'
-    'body': '\\[printfulltask ${1:off}\\]'
-
+    'body': 'printfulltask ${1:off}'
   'dump':
     'prefix': 'dump'
-    'body': '\\[dump ${1:off}\\]'
-
+    'body': 'dump ${1:off}'
   'printsimp':
     'prefix': 'printsimp'
-    'body': '\\[printsimp ${1:off}\\]'
-
+    'body': 'printsimp ${1:off}'
   'printthesis':
     'prefix': 'printthesis'
-    'body': '\\[printthesis ${1:off}\\]'
-
+    'body': 'printthesis ${1:off}'
   'ontored':
     'prefix': 'ontored'
-    'body': '\\[ontored ${1:off}\\]'
-
+    'body': 'ontored ${1:off}'
   'unfold':
     'prefix': 'unfold'
-    'body': '\\[unfold ${1:off}\\]'
-
+    'body': 'unfold ${1:off}'
   'unfoldsf':
     'prefix': 'unfoldsf'
-    'body': '\\[unfoldsf ${1:off}\\]'
-
+    'body': 'unfoldsf ${1:off}'
   'unfoldlow':
     'prefix': 'unfoldlow'
-    'body': '\\[unfoldlow ${1:on}\\]'
-
+    'body': 'unfoldlow ${1:on}'
   'unfoldlowsf':
     'prefix': 'unfoldlowsf'
-    'body': '\\[unfoldlowsf ${1:off}\\]'
-
+    'body': 'unfoldlowsf ${1:off}'
   'checkontored':
     'prefix': 'checkontored'
-    'body': '\\[checkontored ${1:off}\\]'
-
+    'body': 'checkontored ${1:off}'
   'translation':
     'prefix': 'translation'
-    'body': '\\[translation ${1:on}\\]'
-
+    'body': 'translation ${1:on}'
   'thesis':
     'prefix': 'thesis'
-    'body': '\\[thesis ${1:on}\\]'
-
+    'body': 'thesis ${1:on}'
   'filter':
     'prefix': 'filter'
-    'body': '\\[filter ${1:on}\\]'
-
-
-## Integer instructions
+    'body': 'filter ${1:on}'
 
   'timelimit':
     'prefix': 'timelimit'
-    'body': '\\[timelimit ${1:3}\\]'
-
+    'body': 'timelimit ${1:3}'
   'depthlimit':
     'prefix': 'depthlimit'
-    'body': '\\[depthlimit ${1:7}\\]'
-
+    'body': 'depthlimit ${1:7}'
   'checktime':
     'prefix': 'checktime'
-    'body': '\\[checktime ${1:1}\\]'
-
+    'body': 'checktime ${1:1}'
   'checkdepth':
     'prefix': 'checkdepth'
-    'body': '\\[checkdepth ${1:3}\\]'
-
-
-## Command instructions
-
-  # 'thesis' and 'filter' are missing due to duplicate key names
+    'body': 'checkdepth ${1:3}'
 
   'exit':
     'prefix': 'exit'
-    'body': '\\[exit\\]'
-
+    'body': 'exit'
   'quit':
     'prefix': 'quit'
-    'body': '\\[quit\\]'
-
+    'body': 'quit'
   'context':
     'prefix': 'context'
-    'body': '\\[context\\]'
-
+    'body': 'context'
   'rules':
     'prefix': 'rules'
-    'body': '\\[rules\\]'
+    'body': 'rules'
 
 
-## Drop instructions
+  # Drop instructions
 
   '/prove':
-    'prefix': '/prove'
-    'body': '\\[/prove\\]'
-
+    'prefix': 'dropprove'
+    'body': '/prove'
   '/check':
-    'prefix': '/check'
+    'prefix': 'dropcheck'
     'body': '\\[/check\\]'
-
   '/symsign':
-    'prefix': '/symsign'
+    'prefix': 'dropsymsign'
     'body': '\\[/symsign\\]'
-
   '/info':
-    'prefix': '/info'
+    'prefix': 'dropinfo'
     'body': '\\[/info\\]'
-
   '/skipfail':
-    'prefix': '/skipfail'
+    'prefix': 'dropskipfail'
     'body': '\\[/skipfail\\]'
-
   '/flat':
-    'prefix': '/flat'
+    'prefix': 'dropflat'
     'body': '\\[/flat\\]'
-
   '/printgoal':
-    'prefix': '/printgoal'
+    'prefix': 'dropprintgoal'
     'body': '\\[/printgoal\\]'
-
   '/printsection':
-    'prefix': '/printsection'
+    'prefix': 'dropprintsection'
     'body': '\\[/printsection\\]'
-
   '/printcheck':
-    'prefix': '/printcheck'
+    'prefix': 'dropprintcheck'
     'body': '\\[/printcheck\\]'
-
   '/printunfold':
-    'prefix': '/printunfold'
+    'prefix': 'dropprintunfold'
     'body': '\\[/printunfold\\]'
-
   '/printreason':
-    'prefix': '/printreason'
+    'prefix': 'dropprintreason'
     'body': '\\[/printreason\\]'
-
   '/printprover':
-    'prefix': '/printprover'
+    'prefix': 'dropprintprover'
     'body': '\\[/printprover\\]'
-
   '/printfulltask':
-    'prefix': '/printfulltask'
+    'prefix': 'dropprintfulltask'
     'body': '\\[/printfulltask\\]'
-
   '/dump':
-    'prefix': '/dump'
+    'prefix': 'dropdump'
     'body': '\\[/dump\\]'
-
   '/printsimp':
-    'prefix': '/printsimp'
+    'prefix': 'dropprintsimp'
     'body': '\\[/printsimp\\]'
-
   '/printthesis':
-    'prefix': '/printthesis'
+    'prefix': 'dropprintthesis'
     'body': '\\[/printthesis\\]'
-
   '/ontored':
-    'prefix': '/ontored'
+    'prefix': 'dropontored'
     'body': '\\[/ontored\\]'
-
   '/unfold':
-    'prefix': '/unfold'
+    'prefix': 'dropunfold'
     'body': '\\[/unfold\\]'
-
   '/unfoldsf':
-    'prefix': '/unfoldsf'
+    'prefix': 'dropunfoldsf'
     'body': '\\[/unfoldsf\\]'
-
   '/unfoldlow':
-    'prefix': '/unfoldlow'
+    'prefix': 'dropunfoldlow'
     'body': '\\[/unfoldlow\\]'
-
   '/unfoldlowsf':
-    'prefix': '/unfoldlowsf'
+    'prefix': 'dropunfoldlowsf'
     'body': '\\[/unfoldlowsf\\]'
-
   '/checkontored':
-    'prefix': '/checkontored'
+    'prefix': 'dropcheckontored'
     'body': '\\[/checkontored\\]'
-
   '/translation':
-    'prefix': '/translation'
+    'prefix': 'droptranslation'
     'body': '\\[/translation\\]'
-
   '/thesis':
-    'prefix': '/thesis'
+    'prefix': 'dropthesis'
     'body': '\\[/thesis\\]'
-
   '/filter':
-    'prefix': '/filter'
+    'prefix': 'dropfilter'
     'body': '\\[/filter\\]'
-
   '/timelimit':
-    'prefix': '/timelimit'
+    'prefix': 'droptimelimit'
     'body': '\\[/timelimit\\]'
-
   '/depthlimit':
-    'prefix': '/depthlimit'
+    'prefix': 'dropdepthlimit'
     'body': '\\[/depthlimit\\]'
-
   '/checktime':
-    'prefix': '/checktime'
+    'prefix': 'dropchecktime'
     'body': '\\[/checktime\\]'
-
   '/checkdepth':
-    'prefix': '/checkdepth'
+    'prefix': 'dropcheckdepth'
     'body': '\\[/checkdepth\\]'
-
   '/exit':
-    'prefix': '/exit'
+    'prefix': 'dropexit'
     'body': '\\[/exit\\]'
-
   '/quit':
-    'prefix': '/quit'
+    'prefix': 'dropquit'
     'body': '\\[/quit\\]'
-
   '/context':
-    'prefix': '/context'
+    'prefix': 'dropcontext'
     'body': '\\[/context\\]'
-
   '/rules':
-    'prefix': '/rules'
+    'prefix': 'droprules'
     'body': '\\[/rules\\]'
