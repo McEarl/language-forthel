@@ -1,0 +1,26 @@
+scopeName: 'source.latex'
+name: 'ForTheL (LaTeX version)'
+fileTypes: [ 'ftl.tex' ]
+limitLineLength: false
+maxTokensPerLine: 300
+patterns: [
+  {
+    commment: 'ForTheL environment (picked up from language-latex2e)'
+    begin: '((\\\\)begin)(\\{)(forthel)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'entity.name.tag.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(forthel)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'entity.name.tag.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.latex-ftl' }]
+  }
+  { include: 'text.tex.latex' }
+]
