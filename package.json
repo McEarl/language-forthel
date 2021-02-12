@@ -7,7 +7,9 @@
     "ftl",
     "naproche",
     "sad",
-    "naproche-sad"
+    "naproche-sad",
+    "latex",
+    "tex"
   ],
   "repository": "https://github.com/McEarl/language-ftl",
   "license": "MIT",
