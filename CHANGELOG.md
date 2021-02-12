@@ -61,3 +61,6 @@
 
 ## 1.0.0
 * Embed LaTeX-ForTheL into the package language-latex2e
+
+## 1.1.0
+* Improve snippets
