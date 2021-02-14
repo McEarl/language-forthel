@@ -42,5 +42,5 @@ This package supports both ForTheL's standard version and its LaTeX version.
 * Slides of ℕaproche-related talks:  
   <https://github.com/naproche-community/Talks>
 
-* Isabelle2021-RC5, which comes with an integration of ℕaproche:  
-  <https://isabelle.sketis.net/website-Isabelle2021-RC5/>
+* Isabelle2021-RC6, which comes with an integration of ℕaproche:  
+  <https://isabelle.sketis.net/website-Isabelle2021-RC6>
