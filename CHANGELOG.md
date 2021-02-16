@@ -64,3 +64,6 @@
 
 ## 1.1.0
 * Improve snippets
+
+## 1.1.1
+* Add highlighting for declarations
