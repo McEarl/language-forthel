@@ -290,6 +290,10 @@ repository:
     match: '(\\b[Ll]et\\b)(.*?)(\\bstand\\b|\\bdenote\\b)'
     captures:
       1: name: 'keyword.control.latex-ftl'
+      2: patterns: [
+        { include: '#displayMathMode' }
+        { include: '#inlineMathMode' }
+      ]
   }
   assume: {
     match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume)\\b'
