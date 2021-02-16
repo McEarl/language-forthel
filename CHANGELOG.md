@@ -67,3 +67,6 @@
 
 ## 1.1.1
 * Add highlighting for declarations
+
+## 1.1.2
+* Fix math mode in declarations
