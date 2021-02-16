@@ -5,8 +5,9 @@ patterns: [
   { include: '#displayMathMode' }
   { include: '#inlineMathMode' }
   { include: '#instruction' }
-  { include: '#topLevelSection'}
-  { include: '#proof'}
+  { include: '#topLevelSection' }
+  { include: '#proof' }
+  { include: '#declaration' }
 ]
 repository:
   inlineMathMode: {
@@ -284,6 +285,11 @@ repository:
       { include: '#lowLevelProof'}
       { include: '#lowLevelTheorem'}
     ]
+  }
+  declaration: {
+    match: '(\\b[Ll]et\\b)(.*?)(\\bstand\\b|\\bdenote\\b)'
+    captures:
+      1: name: 'keyword.control.latex-ftl'
   }
   assume: {
     match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume)\\b'
