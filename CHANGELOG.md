@@ -1,72 +1,187 @@
-## 0.1.0 - First Release
-* Every feature added
-* Every bug fixed
+## 1.2.0
 
-## 0.1.2
-* Better handling of the words "atom", "relation", "notion" and "constant"
-* Add the word "statement"
+### New:
+* Snippets for `\newcommand`, `\renewcommand` and `\newenvironment` (LaTeX mode)
+* Snippet for document template (LaTeX mode)
+* Snippet for `checkconsistency` instruction
+* Add link to *CHANGELOG.md* to *README.md*
 
-## 0.1.3
-* Add keywords: Now you can find the package when you search for "forthel",
-  "ftl", "naproche", "sad" and "naproche-sad"
+### Changed:
+* New layout of *CHANGELOG.md*
+* Add line breaks to LaTeX-ForTheL example
+* Reduce list of package keywords
+* Reduce settings
+* Update Isabelle version in *README.md*
 
-## 0.2.1
-* Enable highlighting of "suppose" and "assume"
-* Disable highlighting of "!=" and "-<-"
+### Fixed:
+* Handling of tabs in snippets
+* Scopes
+* Repository URL
+* Highlighting of low-level theorems (LaTeX mode)
+* Highlighting of `comment` environments (LaTeX mode)
+* Highlighting of comments in math mode (LaTeX mode)
+* Highlighting of LaTeX commands in `cases` enviromnents (LaTeX mode)
 
-## 0.4.1
-* Clean up the present syntax highlighting
-* Add editor settings
-* Add snippets
 
-## 0.4.2
-* Rename instructions
-* Fix drop instruction
-
-## 0.4.3
-* Rename package to language-forthel
-
-## 0.5.0
-* Add syntax highlighting for ForTheL's LaTeX version
-
-## 0.5.1
-* Some fixes and minor internal changes
-* Add highlighting for URLs in ForTheL's LaTeX version
-
-## 0.5.2
-* Add readtex instruction
-
-## 0.5.3
-* Fix LaTeX example
-
-## 0.5.4
-* Add math mode to ForTheL environments
-
-## 0.5.5
-* Fix inline math in case splits in function definitions
-
-## 0.5.6
-* Improve LaTeX code in example file
-
-## 0.5.7
-* Change file name extension for LaTeX-ForTheL files from .tex.ftl to .ftl.tex
-
-## 0.5.8
-* Add snippet for ForTheL environment in LaTeX mode
-
-## 0.5.9
-* Apply new ForTheL standards to examples
-* Add highlighting for logical symbols and class terms
-* Add highlighting for linebreaks (LaTeX mode)
-
-## 1.0.0
-* Embed LaTeX-ForTheL into the package language-latex2e
-
-## 1.1.0
-* Improve snippets
-
-## 1.1.1
-* Add highlighting for declarations
 
 ## 1.1.2
-* Fix math mode in declarations
+
+### Fixed:
+* Math mode in declarations
+
+
+
+## 1.1.1
+
+### New:
+* Highlighting for declarations
+
+
+
+## 1.1.0
+
+### Changed:
+* Improve snippets
+
+
+
+## 1.0.0
+
+### New:
+* Embed LaTeX-ForTheL into the package language-latex2e
+
+
+
+## 0.5.9
+
+### New:
+* Highlighting for logical symbols and class terms
+* Highlighting for linebreaks (LaTeX mode)
+
+### Changed:
+* Apply new ForTheL standards to examples
+
+
+
+## 0.5.8
+
+### New:
+* Snippet for ForTheL environment in LaTeX mode
+
+
+
+## 0.5.7
+
+### Changed:
+* Change file name extension for LaTeX-ForTheL files from .tex.ftl to .ftl.tex
+
+
+
+## 0.5.6
+
+### Changed:
+* Improve LaTeX code in example file
+
+
+
+## 0.5.5
+
+### Fixed:
+* Inline math in case splits in function definitions
+
+
+
+## 0.5.4
+
+### New:
+* Math mode in ForTheL environments
+
+
+
+## 0.5.3
+
+### Fixed:
+* LaTeX example
+
+
+
+## 0.5.2
+
+### New:
+* `readtex` instruction
+
+
+
+## 0.5.1
+
+### Fixed:
+* Some fixes and minor internal changes
+
+### New:
+* Highlighting for URLs in ForTheL's LaTeX version
+
+
+
+## 0.5.0
+
+### New:
+* Syntax highlighting for ForTheL's LaTeX version
+
+
+
+## 0.4.3
+
+### Changed:
+* Rename package to *language-forthel*
+
+
+
+## 0.4.2
+
+### Changed:
+* Rename instructions
+
+### Fixed:
+* *Drop* instructions
+
+
+
+## 0.4.1
+
+### New:
+* Editor settings
+* Snippets
+
+### Fixed:
+* Clean up the present syntax highlighting
+
+
+
+## 0.2.1
+
+### New:
+* Highlighting of "suppose" and "assume"
+
+### Changed:
+* Disable highlighting of "!=" and "-<-"
+
+
+
+## 0.1.3
+
+### New:
+* Add keywords: "forthel", "ftl", "naproche", "sad" and "naproche-sad"
+
+
+
+## 0.1.2
+
+### New:
+* Highlight `statement`
+
+### Fixed:
+* Better handling of  `atom`, `relation`, `notion` and `constant`
+
+
+
+## 0.1.0 - First Release
