@@ -1,6 +1,6 @@
 # Taken from language-latex
 
-'.text.tex.latex':
+'.text.tex.ftl-tex':
 # preamble and package/class file
   "\\RequirePackage":
     "prefix": "\\RequirePackage"
@@ -20,6 +20,29 @@
   "usepackage (pkg)":
     "prefix": "pkg"
     "body": "\\\\usepackage$2{${1:package name}}$0"
+  '\\newcommand':
+    'prefix': '\\newcommand'
+    'body': '\\\\newcommand$3\\{${1:new command}\\}\\{${2:commands}\\}$0'
+  'newcommand':
+    'prefix': 'newcommand'
+    'body': '\\\\newcommand$3\\{${1:new command}\\}\\{${2:commands}\\}$0'
+  '\\renewcommand':
+    'prefix': '\\renewcommand'
+    'body': '\\\\newcommand$3\\{${1:existing command}\\}\\{${2:commands}\\}$0'
+  'renewcommand':
+    'prefix': 'renewcommand'
+    'body': '\\\\newcommand$3\\{${1:existing command}\\}\\{${2:commands}\\}$0'
+  '\\newenvironment':
+    'prefix': '\\newenvironment'
+    'body': '\\\\newcommand$4\\{${1:new environment}\\}\\{${2:begin commands}\\}\\{${3:end commands}\\}$0'
+  'newenvironment':
+    'prefix': 'newenvironment'
+    'body': '\\\\newcommand$4\\{${1:new environment}\\}\\{${2:begin commands}\\}\\{${3:end commands}\\}$0'
+
+# New document
+  'newdoc':
+    'prefix': 'newdoc'
+    'body': '\\\\documentclass\\{${1:article}\\}\n\n\\\\usepackage\\[utf8\\]\\{inputenc\\}\n\\\\usepackage\\[english\\]\\{babel\\}\n\\\\usepackage\\{naproche\\}\n\n\\\\begin\\{document\\}\n\t$2\n\\\\end\\{document\\}'
 
 # document level
   '\\part':
@@ -106,7 +129,7 @@
     'body': '\\\\($1\\\\)$0'
 
 # math, taken from  https://github.com/SublimeText/LaTeXTools/blob/master/LaTeX%20math.sublime-completions
-'.text.tex.latex .string.other.math':
+'.text.tex.ftl-tex .string.other.math':
   'math italic':
     'prefix': 'it'
     'body': '\\\\mathit{$1}$0'
@@ -142,7 +165,7 @@
     'body': '\\\\begin{$1matrix$2}$3\n\t$0\n\\\\end{$1matrix$2}'
 
 # Beamer
-'.text.tex.latex.beamer':
+'.text.tex.ftl-tex.beamer':
   'Frame':
     'prefix': 'frame'
     'body': '\\\\begin{frame}[t]{${1:title}}\n\t${2:body}\n\\\\end{frame}\n%--- Next Frame ---%'
@@ -152,7 +175,7 @@
 
 
 # other
-'.text.tex.latex .meta.function.environment.list':
+'.text.tex.ftl-tex .meta.function.environment.list':
   '\\item':
     'prefix': '\\item'
     'body': '\\\\item ${0:item}'
