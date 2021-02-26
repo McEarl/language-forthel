@@ -2,17 +2,14 @@
   'editor':
     'autoIndentOnPaste': true
     'softTabs': true
-    'tabLength': 2
     'preferredLineLength': 80
     'increaseIndentPattern': '(\\b([Pp]roof|[Cc]ase)\\b)|(\\b[Ll]et\\b\\ +\\bus\\b|\\b[Ww]e\\b\\ +\\bcan\\b)'
     'decreaseIndentPattern': '\\b([Ee]nd|[Qq][Ee][Dd]|[Oo]bvious|[Tt]rivial)\\b'
 
-
-'.source.latex-ftl':
+'.text.tex.ftl-tex':
   'editor':
     'autoIndentOnPaste': true
     'softTabs': true
-    'tabLength': 2
     'preferredLineLength': 80
-    'increaseIndentPattern': '(\\\\begin)|(\\b[Pp]roof\\b\\ *\\.)|(\\b[Cc]ase\\b)|(\\b[Ll]et\\b\\ +\\bus\\b|\\b[Ww]e\\b\\ +\\bcan\\b)'
-    'decreaseIndentPattern': '(\\\\end)|(\\b([Ee]nd|[Qq][Ee][Dd]|[Oo]bvious|[Tt]rivial)\\b)'
+    'increaseIndentPattern': '(\\\\begin)'
+    'decreaseIndentPattern': '(\\\\end)'
