@@ -4,60 +4,48 @@
 
   'definition':
     'prefix': 'definition'
-    'body': 'Definition$1. $2'
+    'body': 'Definition$1\\. $2'
 
   'signature':
     'prefix': 'signature'
-    'body': 'Signature$1. $2'
+    'body': 'Signature$1\\. $2'
   'axiom':
     'prefix': 'axiom'
-    'body': 'Axiom$1. $2'
+    'body': 'Axiom$1\\. $2'
   'theorem':
     'prefix': 'theorem'
-    'body': 'Theorem$1. $2'
+    'body': 'Theorem$1\\. $2'
   'lemma':
     'prefix': 'lemma'
-    'body': 'Lemma$1. $2'
+    'body': 'Lemma$1\\. $2'
   'proposition':
     'prefix': 'proposition'
-    'body': 'Proposition$1. $2'
+    'body': 'Proposition$1\\. $2'
   'corollary':
     'prefix': 'corollary'
-    'body': 'Corollary$1. $2'
+    'body': 'Corollary$1\\. $2'
   'top-level proof':
     'prefix': 'Proof'
-    'body': """
-      Proof$1.
-        $2
-      qed.
-    """
+    'body': 'Proof$1.\n\t$2\nqed\\.'
 
   # Low-level proofs
 
   'low-level proof':
     'prefix': 'proof'
-    'body': """
-      proof$1.
-        $2
-      end.
-    """
+    'body': 'proof$1\\.\n\t$2\nend\\.'
   'case':
     'prefix': 'case'
-    'body': """
-      Case $1.
-        $2
-      end.
-    """
+    'body': 'Case $1\\.\n\t$2\nend\\.'
   'reference':
     'prefix': 'reference'
-    'body': '(by ${1:label})$2'
+    'body': '\\(by ${1:label}\\)$2'
 
 
   # Low-level definitions
 
   'class definition':
     'prefix': 'class'
-    'body': 'Define ${1:X} = \\\\\\{ ${2:x} \\\\mid ${3:\\\\phi(x)} \\\\\\}\\.$4'
+    'body': 'Define ${1:X} = \\\\\\{ ${2:x} \\| ${3:\\\\phi(x)} \\\\\\}\\.$4'
   'function definition':
     'prefix': 'fun'
     'body': 'Define ${1:f}\\(${2:x}\\) = ${3:y} for ${2:x} in ${4:X}\\.$5'
@@ -66,7 +54,7 @@
     'body': 'choose ${1:u} in ${2:t}'
   'lambda abstraction':
     'prefix': 'lambda'
-    'body': '\\\\fun ${1:x} in ${2:X}\\. ${3:y}'
+    'body': '\\\\ ${1:x} in ${2:X}\\. ${3:y}'
 
 
 # Instructions
@@ -165,6 +153,9 @@
 'filter':
   'prefix': 'filter'
   'body': 'filter ${1:on}'
+'checkconsistency':
+  'prefix': 'checkconsistency'
+  'body': 'checkconsistency ${1:on}'
 
 'timelimit':
   'prefix': 'timelimit'
