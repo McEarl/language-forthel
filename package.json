@@ -5,13 +5,9 @@
   "keywords": [
     "forthel",
     "ftl",
-    "naproche",
-    "sad",
-    "naproche-sad",
-    "latex",
-    "tex"
+    "naproche"
   ],
-  "repository": "https://github.com/McEarl/language-ftl",
+  "repository": "https://github.com/McEarl/language-forthel",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
