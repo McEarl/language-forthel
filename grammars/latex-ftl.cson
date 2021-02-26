@@ -1,4 +1,4 @@
-scopeName: 'text.tex.latex.latex-ftl'
+scopeName: 'text.tex.ftl-tex.latex-ftl'
 patterns: [
   { include: 'text.tex.latex#metaPercent' }
   { include: 'text.tex.latex#doubleBackslash' }
@@ -25,6 +25,7 @@ repository:
         name: 'invalid.illegal.latex'
         match: '(\\\\(\\[|\\]|\\(|\\)))'
       }
+      { include: 'text.tex.latex#metaPercent' }
       { include: 'text.tex.latex#text' }
       { include: '#envCases'}
       { include: '#metaUnderscore'}
@@ -49,6 +50,7 @@ repository:
         name: 'invalid.illegal.latex'
         match: '(\\$)(?=[^\\$])|(\\\\(\\[|\\]|\\(|\\)))'
       }
+      { include: 'text.tex.latex#metaPercent' }
       { include: 'text.tex.latex#text' }
       { include: '#envCases'}
       { include: '#metaUnderscore'}
@@ -269,7 +271,7 @@ repository:
       5: name: 'punctuation.definition.arguments.end.latex'
     patterns: [
       {
-        omment: 'do not highlight "case" in "proof by case analysis"'
+        comment: 'do not highlight "case" in "proof by case analysis"'
         match: '\\bcase\\b\\ +\\banalysis\\b'
         name: 'meta.latex-ftl'
       }
@@ -279,11 +281,11 @@ repository:
       { include: 'text.tex.latex#doubleBackslash' }
       { include: 'text.tex.latex#escapedCharacter' }
       { include: '#instruction'}
+      { include: '#lowLevelTheorem' }
       { include: '#assume'}
       { include: '#take'}
       { include: '#define'}
       { include: '#lowLevelProof'}
-      { include: '#lowLevelTheorem'}
     ]
   }
   declaration: {
@@ -351,6 +353,10 @@ repository:
       { include: '#ampersand' }
       { include: '#take'}
       { include: 'text.tex.latex#text' }
+      { include: '#metaUnderscore'}
+      { include: '#metaCaret'}
+      { include: '#controlSymbol'}
+      { include: '#controlWord'}
     ]
   }
   ampersand: {
