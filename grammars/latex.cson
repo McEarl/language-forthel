@@ -1,10 +1,15 @@
-scopeName: 'text.tex.latex'
+scopeName: 'text.tex.ftl-tex'
 name: 'ForTheL (LaTeX version)'
 fileTypes: [ 'ftl.tex' ]
 limitLineLength: false
 maxTokensPerLine: 300
 patterns: [
-  {
+  { include : '#envForthel' }
+  { include: '#envComment' }
+  { include: 'text.tex.latex' }
+]
+repository:
+  envForthel: {
     commment: 'ForTheL environment (picked up from language-latex2e)'
     begin: '((\\\\)begin)(\\{)(forthel)(\\})'
     beginCaptures:
@@ -20,7 +25,22 @@ patterns: [
       3: name: 'punctuation.definition.arguments.begin.latex'
       4: name: 'entity.name.tag.latex'
       5: name: 'punctuation.definition.arguments.end.latex'
-    patterns: [{ include: 'text.tex.latex.latex-ftl' }]
+    patterns: [{ include: 'text.tex.ftl-tex.latex-ftl' }]
   }
-  { include: 'text.tex.latex' }
-]
+  envComment: {
+    begin: '((\\\\)begin)(\\{)(comment)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.ftl-tex'
+      2: name: 'punctuation.definition.function.begin.ftl-tex'
+      3: name: 'punctuation.definition.arguments.begin.ftl-tex'
+      4: name: 'variable.parameter.function.ftl-tex'
+      5: name: 'punctuation.definition.arguments.end.ftl-tex'
+    end: '((\\\\)end)(\\{)(comment)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.ftl-tex'
+      2: name: 'punctuation.definition.function.ftl-tex'
+      3: name: 'punctuation.definition.arguments.begin.ftl-tex'
+      4: name: 'variable.parameter.function.ftl-tex'
+      5: name: 'punctuation.definition.arguments.end.ftl-tex'
+    contentName: 'comment.block.latex'
+  }
