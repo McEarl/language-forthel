@@ -1,21 +1,13 @@
-'.text.tex.latex':
+'.text.tex.ftl-tex':
 
   # Proofs
 
   'low-level proof':
     'prefix': 'proof'
-    'body': """
-      Proof$1\\.
-        $2
-      end\\.
-    """
+    'body': 'Proof$1\\.\n\t$2\nQed\\.'
   'case':
     'prefix': 'case'
-    'body': """
-      Case ${1:condition}\\.
-        $2
-      end\\.
-    """
+    'body': 'Case ${1:condition}\\.\n\t$2\nEnd\\.'
   'reference':
     'prefix': 'ref'
     'body': '\\(by ${1:label}\\)$2'
@@ -133,6 +125,9 @@
   'filter':
     'prefix': 'filter'
     'body': 'filter ${1:on}'
+  'checkconsistency':
+    'prefix': 'checkconsistency'
+    'body': 'checkconsistency ${1:on}'
 
   'timelimit':
     'prefix': 'timelimit'
