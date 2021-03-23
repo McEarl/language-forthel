@@ -34,18 +34,13 @@ This package supports both ForTheL's standard version and its LaTeX version.
 ## Links
 
 * ℕaproche's GitHub repository:  
-  <https://github.com/naproche-community/naproche>
+  <https://github.com/naproche/naproche>
 
 * FLib, a collection of ForTheL texts:  
-  <https://github.com/naproche-community/FLib>
+  <https://github.com/naproche/FLib>
 
 * Slides of ℕaproche-related talks:  
-  <https://github.com/naproche-community/Talks>
+  <https://github.com/naproche/Talks>
 
 * Isabelle 2021, which comes with an integration of ℕaproche:  
   <https://isabelle.in.tum.de/>
-
-
-## Changelog
-
-<https://github.com/McEarl/language-forthel/blob/master/CHANGELOG.md>
