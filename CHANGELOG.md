@@ -1,3 +1,10 @@
+## 1.2.1
+
+### Fixed:
+* Year in LICENSE.md
+* GitHub links in README.md
+
+
 ## 1.2.0
 
 ### New:
