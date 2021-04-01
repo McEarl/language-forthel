@@ -1,4 +1,4 @@
-## 1.2.1
+## 1.2.4
 
 ### Fixed:
 * Year in LICENSE.md
