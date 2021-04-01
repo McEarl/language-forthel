@@ -12,7 +12,9 @@
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "git-utils": "^5.7.1"
+  },
   "package-deps": [
     "language-latex2e"
   ]
