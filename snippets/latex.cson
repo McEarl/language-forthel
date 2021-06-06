@@ -88,6 +88,39 @@
     'prefix': 'subparagraph'
     'body': '\\\\subparagraph{${1:subparagraph name}}\n$0'
 
+  'maketitle':
+    'prefix': 'maketitle'
+    'body': '\\\\maketitle'
+  '\\maketitle':
+    'prefix': '\\maketitle'
+    'body': '\\\\maketitle'
+
+  'text italic':
+    'prefix': 'textit'
+    'body': '\\\\textit{$1}$0'
+  '\\text italic':
+    'prefix': '\\textit'
+    'body': '\\\\textit{$1}$0'
+  'text boldface':
+    'prefix': 'textbf'
+    'body': '\\\\textbf{$1}$0'
+  '\\text boldface':
+    'prefix': '\\textbf'
+    'body': '\\\\textbf{$1}$0'
+  'text typewriter':
+    'prefix': 'texttt'
+    'body': '\\\\texttt{$1}$0'
+  '\\text typewriter':
+    'prefix': '\\texttt'
+    'body': '\\\\texttt{$1}$0'
+  'text':
+    'prefix': 'text'
+    'body': '\\\\text{$1}$0'
+  '\\text':
+    'prefix': '\\text'
+    'body': '\\\\text{$1}$0'
+
+
 # environment
   '\\begin{}...\\end{}':
     'prefix': '\\begin'
@@ -131,22 +164,22 @@
 # math, taken from  https://github.com/SublimeText/LaTeXTools/blob/master/LaTeX%20math.sublime-completions
 '.text.tex.ftl-tex .string.other.math':
   'math italic':
-    'prefix': 'it'
+    'prefix': 'mathit'
     'body': '\\\\mathit{$1}$0'
   'math boldface':
-    'prefix': 'bf'
+    'prefix': 'mathbf'
     'body': '\\\\mathbf{$1}$0'
   'math blackboard':
-    'prefix': 'bb'
+    'prefix': 'mathbb'
     'body': '\\\\mathbb{$1}$0'
   'math roman':
-    'prefix': 'rm'
+    'prefix': 'mathrm'
     'body': '\\\\mathrm{$1}$0'
   'math sans-serif':
-    'prefix': 'sf'
+    'prefix': 'mathsf'
     'body': '\\\\mathsf{$1}$0'
   'math calligraphy':
-    'prefix': 'cal'
+    'prefix': 'mathcal'
     'body': '\\\\mathcal{$1}$0'
   '\\fraction':
     'prefix': '\\frac'
