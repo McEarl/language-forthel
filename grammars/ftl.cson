@@ -34,7 +34,7 @@ patterns: [
   }
   {
     comment: 'top-level section'
-    match: '([Dd]efinition|[Ss]ignature|[Aa]xiom|[Tt]heorem|[Ll]emma|[Pp]roposition|[Cc]orollary)(\\ +[a-zA-Z0-9\\_]*)?(\\ *)(\\.)'
+    match: '([Dd]efinition|[Ss]ignature|[Aa]xiom|[Tt]heorem|[Ll]emma|[Pp]roposition|[Cc]orollary)(\\ [a-zA-Z0-9\\_\\ ]*)?(\\.)'
     captures:
       1: name: 'entity.name.section.plain-ftl'
   }
