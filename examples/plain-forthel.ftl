@@ -16,8 +16,6 @@ Definition. The powerset of x is the set of subsets of x.
 Definition. A function from x to y is a function f such that Dom(f) = x and
 f(u) \in y for every u \in x.
 
-[synonym surjection/-s]
-
 Definition. A surjection from x onto y is a function f from x to y such that for
 every element v of y there exists an element u of x such that v = f(u).
 
