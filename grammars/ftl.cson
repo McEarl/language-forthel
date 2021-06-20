@@ -1,4 +1,4 @@
-scopeName: 'source.plain-ftl'
+scopeName: 'source.ftl'
 name: 'ForTheL (standard version)'
 fileTypes: [ 'ftl' ]
 patterns: [
@@ -45,6 +45,11 @@ patterns: [
       1: name: 'support.function.plain-ftl'
   }
   {
+    comment: 'let us show'
+    match: '(\\b[Ll]et\\b\\ +\\bus\\b|\\b[Ww]e\\b\\ +\\bcan\\b)\\ +\\bshow\\b'
+    name: 'entity.name.section.plain-ftl'
+  }
+  {
     comment: 'let, assume, suppose, presume, take, choose, consider, define'
     match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume|[Tt]ake|[Cc]hoose|[Cc]onsider|[Dd]efine)\\b'
     name: 'support.function.plain-ftl'
@@ -58,11 +63,6 @@ patterns: [
   {
     comment: 'indeed, case, end, qed, obvious, trivial'
     match: '\\b([Ii]ndeed|[Cc]ase|[Ee]nd|[Qq]ed|[Oo]bvious|[Tt]rivial)\\b'
-    name: 'entity.name.section.plain-ftl'
-  }
-  {
-    comment: 'let us show'
-    match: '(\\b[Ll]et\\b\\ +\\bus\\b|\\b[Ww]e\\b\\ +\\bcan\\b)\\ +\\bshow\\b'
     name: 'entity.name.section.plain-ftl'
   }
   {
