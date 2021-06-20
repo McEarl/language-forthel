@@ -1,4 +1,23 @@
+# Changelog
+
+
+## 1.2.5
+
+### New:
+* New LaTeX snippets
+
+### Changed:
+* Remove snippets for drop instructions
+* Scope name for plain ForTheL is now `source.ftl`
+
+### Fixed
+* Highlighting of `proof by induction on ...`
+* Highlighting of top-level section labels
+
+
 ## 1.2.4
+
+_(Due to problems during publishing some version numbers were skipped.)_
 
 ### Fixed:
 * Year in LICENSE.md
