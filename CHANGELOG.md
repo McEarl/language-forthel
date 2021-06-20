@@ -1,6 +1,14 @@
 # Changelog
 
 
+
+## 1.2.6
+
+### Fixed:
+* Just some minor fixes
+
+
+
 ## 1.2.5
 
 ### New:
@@ -15,13 +23,13 @@
 * Highlighting of top-level section labels
 
 
-## 1.2.4
 
-_(Due to problems during publishing some version numbers were skipped.)_
+## 1.2.4
 
 ### Fixed:
 * Year in LICENSE.md
 * GitHub links in README.md
+
 
 
 ## 1.2.0
