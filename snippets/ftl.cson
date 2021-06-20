@@ -1,11 +1,10 @@
-'.source.plain-ftl':
+'.source.ftl':
 
   # Top-level sections
 
   'definition':
     'prefix': 'definition'
     'body': 'Definition$1\\. $2'
-
   'signature':
     'prefix': 'signature'
     'body': 'Signature$1\\. $2'
@@ -182,106 +181,3 @@
 'rules':
   'prefix': 'rules'
   'body': 'rules'
-
-
-# Drop instructions
-
-'/prove':
-  'prefix': 'dropprove'
-  'body': '/prove'
-'/check':
-  'prefix': 'dropcheck'
-  'body': '\\[/check\\]'
-'/symsign':
-  'prefix': 'dropsymsign'
-  'body': '\\[/symsign\\]'
-'/info':
-  'prefix': 'dropinfo'
-  'body': '\\[/info\\]'
-'/skipfail':
-  'prefix': 'dropskipfail'
-  'body': '\\[/skipfail\\]'
-'/flat':
-  'prefix': 'dropflat'
-  'body': '\\[/flat\\]'
-'/printgoal':
-  'prefix': 'dropprintgoal'
-  'body': '\\[/printgoal\\]'
-'/printsection':
-  'prefix': 'dropprintsection'
-  'body': '\\[/printsection\\]'
-'/printcheck':
-  'prefix': 'dropprintcheck'
-  'body': '\\[/printcheck\\]'
-'/printunfold':
-  'prefix': 'dropprintunfold'
-  'body': '\\[/printunfold\\]'
-'/printreason':
-  'prefix': 'dropprintreason'
-  'body': '\\[/printreason\\]'
-'/printprover':
-  'prefix': 'dropprintprover'
-  'body': '\\[/printprover\\]'
-'/printfulltask':
-  'prefix': 'dropprintfulltask'
-  'body': '\\[/printfulltask\\]'
-'/dump':
-  'prefix': 'dropdump'
-  'body': '\\[/dump\\]'
-'/printsimp':
-  'prefix': 'dropprintsimp'
-  'body': '\\[/printsimp\\]'
-'/printthesis':
-  'prefix': 'dropprintthesis'
-  'body': '\\[/printthesis\\]'
-'/ontored':
-  'prefix': 'dropontored'
-  'body': '\\[/ontored\\]'
-'/unfold':
-  'prefix': 'dropunfold'
-  'body': '\\[/unfold\\]'
-'/unfoldsf':
-  'prefix': 'dropunfoldsf'
-  'body': '\\[/unfoldsf\\]'
-'/unfoldlow':
-  'prefix': 'dropunfoldlow'
-  'body': '\\[/unfoldlow\\]'
-'/unfoldlowsf':
-  'prefix': 'dropunfoldlowsf'
-  'body': '\\[/unfoldlowsf\\]'
-'/checkontored':
-  'prefix': 'dropcheckontored'
-  'body': '\\[/checkontored\\]'
-'/translation':
-  'prefix': 'droptranslation'
-  'body': '\\[/translation\\]'
-'/thesis':
-  'prefix': 'dropthesis'
-  'body': '\\[/thesis\\]'
-'/filter':
-  'prefix': 'dropfilter'
-  'body': '\\[/filter\\]'
-'/timelimit':
-  'prefix': 'droptimelimit'
-  'body': '\\[/timelimit\\]'
-'/depthlimit':
-  'prefix': 'dropdepthlimit'
-  'body': '\\[/depthlimit\\]'
-'/checktime':
-  'prefix': 'dropchecktime'
-  'body': '\\[/checktime\\]'
-'/checkdepth':
-  'prefix': 'dropcheckdepth'
-  'body': '\\[/checkdepth\\]'
-'/exit':
-  'prefix': 'dropexit'
-  'body': '\\[/exit\\]'
-'/quit':
-  'prefix': 'dropquit'
-  'body': '\\[/quit\\]'
-'/context':
-  'prefix': 'dropcontext'
-  'body': '\\[/context\\]'
-'/rules':
-  'prefix': 'droprules'
-  'body': '\\[/rules\\]'

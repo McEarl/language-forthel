@@ -1,9 +1,40 @@
 '.text.tex.ftl-tex':
 
+  'ForTheL environment':
+    'prefix': 'forthel'
+    'body': '\\\\begin\\{forthel\\}\n\t$2\n\\\\end\\{forthel\\}'
+
+  # Top-level sections
+
+  'definition':
+    'prefix': 'definition'
+    'body': '\\\\begin\\{definition\\}\\[$1\\]\n\t$2\n\\\\end\\{definition\\}'
+  'signature extension':
+    'prefix': 'signature'
+    'body': '\\\\begin\\{signature\\}\\[$1\\]\n\t$2\n\\\\end\\{signature\\}'
+  'axiom':
+    'prefix': 'axiom'
+    'body': '\\\\begin\\{axiom\\}\\[$1\\]\n\t$2\n\\\\end\\{axiom\\}'
+  'theorem':
+    'prefix': 'theorem'
+    'body': '\\\\begin\\{theorem\\}\\[$1\\]\n\t$2\n\\\\end\\{theorem\\}'
+  'proposition':
+    'prefix': 'proposition'
+    'body': '\\\\begin\\{proposition\\}\\[$1\\]\n\t$2\n\\\\end\\{proposition\\}'
+  'lemma':
+    'prefix': 'lemma'
+    'body': '\\\\begin\\{lemma\\}\\[$1\\]\n\t$2\n\\\\end\\{lemma\\}'
+  'corollary':
+    'prefix': 'corollary'
+    'body': '\\\\begin\\{corollary\\}\\[$1\\]\n\t$2\n\\\\end\\{corollary\\}'
+  'top-level proof':
+    'prefix': 'proof'
+    'body': '\\\\begin\\{proof\\}\n\t$2\n\\\\end\\{proof\\}'
+
   # Proofs
 
   'low-level proof':
-    'prefix': 'proof'
+    'prefix': 'llproof'
     'body': 'Proof$1\\.\n\t$2\nQed\\.'
   'case':
     'prefix': 'case'
@@ -154,106 +185,3 @@
   'rules':
     'prefix': 'rules'
     'body': 'rules'
-
-
-  # Drop instructions
-
-  '/prove':
-    'prefix': 'dropprove'
-    'body': '/prove'
-  '/check':
-    'prefix': 'dropcheck'
-    'body': '\\[/check\\]'
-  '/symsign':
-    'prefix': 'dropsymsign'
-    'body': '\\[/symsign\\]'
-  '/info':
-    'prefix': 'dropinfo'
-    'body': '\\[/info\\]'
-  '/skipfail':
-    'prefix': 'dropskipfail'
-    'body': '\\[/skipfail\\]'
-  '/flat':
-    'prefix': 'dropflat'
-    'body': '\\[/flat\\]'
-  '/printgoal':
-    'prefix': 'dropprintgoal'
-    'body': '\\[/printgoal\\]'
-  '/printsection':
-    'prefix': 'dropprintsection'
-    'body': '\\[/printsection\\]'
-  '/printcheck':
-    'prefix': 'dropprintcheck'
-    'body': '\\[/printcheck\\]'
-  '/printunfold':
-    'prefix': 'dropprintunfold'
-    'body': '\\[/printunfold\\]'
-  '/printreason':
-    'prefix': 'dropprintreason'
-    'body': '\\[/printreason\\]'
-  '/printprover':
-    'prefix': 'dropprintprover'
-    'body': '\\[/printprover\\]'
-  '/printfulltask':
-    'prefix': 'dropprintfulltask'
-    'body': '\\[/printfulltask\\]'
-  '/dump':
-    'prefix': 'dropdump'
-    'body': '\\[/dump\\]'
-  '/printsimp':
-    'prefix': 'dropprintsimp'
-    'body': '\\[/printsimp\\]'
-  '/printthesis':
-    'prefix': 'dropprintthesis'
-    'body': '\\[/printthesis\\]'
-  '/ontored':
-    'prefix': 'dropontored'
-    'body': '\\[/ontored\\]'
-  '/unfold':
-    'prefix': 'dropunfold'
-    'body': '\\[/unfold\\]'
-  '/unfoldsf':
-    'prefix': 'dropunfoldsf'
-    'body': '\\[/unfoldsf\\]'
-  '/unfoldlow':
-    'prefix': 'dropunfoldlow'
-    'body': '\\[/unfoldlow\\]'
-  '/unfoldlowsf':
-    'prefix': 'dropunfoldlowsf'
-    'body': '\\[/unfoldlowsf\\]'
-  '/checkontored':
-    'prefix': 'dropcheckontored'
-    'body': '\\[/checkontored\\]'
-  '/translation':
-    'prefix': 'droptranslation'
-    'body': '\\[/translation\\]'
-  '/thesis':
-    'prefix': 'dropthesis'
-    'body': '\\[/thesis\\]'
-  '/filter':
-    'prefix': 'dropfilter'
-    'body': '\\[/filter\\]'
-  '/timelimit':
-    'prefix': 'droptimelimit'
-    'body': '\\[/timelimit\\]'
-  '/depthlimit':
-    'prefix': 'dropdepthlimit'
-    'body': '\\[/depthlimit\\]'
-  '/checktime':
-    'prefix': 'dropchecktime'
-    'body': '\\[/checktime\\]'
-  '/checkdepth':
-    'prefix': 'dropcheckdepth'
-    'body': '\\[/checkdepth\\]'
-  '/exit':
-    'prefix': 'dropexit'
-    'body': '\\[/exit\\]'
-  '/quit':
-    'prefix': 'dropquit'
-    'body': '\\[/quit\\]'
-  '/context':
-    'prefix': 'dropcontext'
-    'body': '\\[/context\\]'
-  '/rules':
-    'prefix': 'droprules'
-    'body': '\\[/rules\\]'
