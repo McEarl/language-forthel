@@ -1,6 +1,6 @@
 {
   "name": "language-forthel",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Adds syntax highlighting to ForTheL in Atom",
   "keywords": [
     "forthel",
