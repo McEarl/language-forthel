@@ -1,73 +1,73 @@
 scopeName: 'source.ftl'
-name: 'ForTheL (standard version)'
+name: 'ForTheL'
 fileTypes: [ 'ftl' ]
 patterns: [
   {
     comment: 'comments'
     match: '#.*$'
-    name: 'comment.plain-ftl'
+    name: 'comment.ftl'
   }
   {
     comment: 'argument(s) instructions'
     match: '\\[\\ *(read|library|prover|provers|synonym)\\ *(.*?)\\ *\\]'
-    name: 'variable.language.plain-ftl'
+    name: 'variable.language.ftl'
   }
   {
     comment: 'flag instructions'
     match: '\\[\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation)\\ *(on|off|yes|no)\\ *\\]'
-    name: 'variable.language.plain-ftl'
+    name: 'variable.language.ftl'
   }
   {
     comment: 'limit instructions'
     match: '\\[\\ *(timelimit|depthlimit|checktime|checkdepth)\\ *[0-9]+\\ *\\]'
-    name: 'variable.language.plain-ftl'
+    name: 'variable.language.ftl'
   }
   {
     comment: 'command instructions'
     match: '\\[\\ *(exit|quit|thesis|context|filter|rules)\\ *\\]'
-    name: 'variable.language.plain-ftl'
+    name: 'variable.language.ftl'
   }
   {
     comment: 'drop instructions'
     match: '\\[\\ */\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation|timelimit|depthlimit|checktime|checkdepth)\\ *\\]'
-    name: 'variable.language.plain-ftl'
+    name: 'variable.language.ftl'
   }
   {
     comment: 'top-level section'
     match: '([Dd]efinition|[Ss]ignature|[Aa]xiom|[Tt]heorem|[Ll]emma|[Pp]roposition|[Cc]orollary)(\\ [a-zA-Z0-9\\_\\ ]*)?(\\.)'
     captures:
-      1: name: 'entity.name.section.plain-ftl'
+      1: name: 'entity.name.section.ftl'
   }
   {
     comment: 'case (low-level function definition)'
     match: '(\\b[Cc]ase\\b)(.*?)(-\\ *>)'
     captures:
-      1: name: 'support.function.plain-ftl'
+      1: name: 'support.function.ftl'
   }
   {
     comment: 'let us show'
     match: '(\\b[Ll]et\\b\\ +\\bus\\b|\\b[Ww]e\\b\\ +\\bcan\\b)\\ +\\bshow\\b'
-    name: 'entity.name.section.plain-ftl'
+    name: 'entity.name.section.ftl'
   }
   {
     comment: 'let, assume, suppose, presume, take, choose, consider, define'
     match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume|[Tt]ake|[Cc]hoose|[Cc]onsider|[Dd]efine)\\b'
-    name: 'support.function.plain-ftl'
+    name: 'support.function.ftl'
   }
   {
     comment: 'proofs'
     match: '(\\b[Pp]roof\\b)((\\ +by\\ +)(case\\ +analysis|(induction\\ +on\\ +(.*?))|contradiction))?(\\ *\\.)'
     captures:
-      1: name: 'entity.name.section.plain-ftl'
+      1: name: 'entity.name.section.ftl'
   }
   {
     comment: 'indeed, case, end, qed, obvious, trivial'
     match: '\\b([Ii]ndeed|[Cc]ase|[Ee]nd|[Qq]ed|[Oo]bvious|[Tt]rivial)\\b'
-    name: 'entity.name.section.plain-ftl'
+    name: 'entity.name.section.ftl'
   }
   {
     comment: 'LaTeX commands'
     match: '\\\\\\b[a-zA-Z0-9]+\\b'
-    name: 'keyword.other.plain-ftl'
+    name: 'keyword.other.ftl'
   }
 ]
