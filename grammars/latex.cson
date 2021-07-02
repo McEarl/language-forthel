@@ -1,5 +1,5 @@
 scopeName: 'text.tex.ftl-tex'
-name: 'ForTheL (LaTeX version)'
+name: 'ForTheL (TeX)'
 fileTypes: [ 'ftl.tex' ]
 limitLineLength: false
 maxTokensPerLine: 300
