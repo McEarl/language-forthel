@@ -8,25 +8,25 @@
 
   'definition':
     'prefix': 'definition'
-    'body': '\\\\begin\\{definition\\}\\[$1\\]\n\t$2\n\\\\end\\{definition\\}'
+    'body': '\\\\begin\\{definition\\}$1\n\t$2\n\\\\end\\{definition\\}'
   'signature extension':
     'prefix': 'signature'
-    'body': '\\\\begin\\{signature\\}\\[$1\\]\n\t$2\n\\\\end\\{signature\\}'
+    'body': '\\\\begin\\{signature\\}$1\n\t$2\n\\\\end\\{signature\\}'
   'axiom':
     'prefix': 'axiom'
-    'body': '\\\\begin\\{axiom\\}\\[$1\\]\n\t$2\n\\\\end\\{axiom\\}'
+    'body': '\\\\begin\\{axiom\\}$1\n\t$2\n\\\\end\\{axiom\\}'
   'theorem':
     'prefix': 'theorem'
-    'body': '\\\\begin\\{theorem\\}\\[$1\\]\n\t$2\n\\\\end\\{theorem\\}'
+    'body': '\\\\begin\\{theorem\\}$1\n\t$2\n\\\\end\\{theorem\\}'
   'proposition':
     'prefix': 'proposition'
-    'body': '\\\\begin\\{proposition\\}\\[$1\\]\n\t$2\n\\\\end\\{proposition\\}'
+    'body': '\\\\begin\\{proposition\\}$1\n\t$2\n\\\\end\\{proposition\\}'
   'lemma':
     'prefix': 'lemma'
-    'body': '\\\\begin\\{lemma\\}\\[$1\\]\n\t$2\n\\\\end\\{lemma\\}'
+    'body': '\\\\begin\\{lemma\\}$1\n\t$2\n\\\\end\\{lemma\\}'
   'corollary':
     'prefix': 'corollary'
-    'body': '\\\\begin\\{corollary\\}\\[$1\\]\n\t$2\n\\\\end\\{corollary\\}'
+    'body': '\\\\begin\\{corollary\\}$1\n\t$2\n\\\\end\\{corollary\\}'
   'top-level proof':
     'prefix': 'proof'
     'body': '\\\\begin\\{proof\\}\n\t$2\n\\\\end\\{proof\\}'
