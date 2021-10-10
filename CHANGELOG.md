@@ -2,6 +2,14 @@
 
 
 
+## 1.2.8
+
+### Fixed:
+
+* Snippets for FTL-TeX
+
+
+
 ## 1.2.7
 
 ### Changed:
