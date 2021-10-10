@@ -28,16 +28,16 @@
     'body': '\\\\newcommand$3\\{${1:new command}\\}\\{${2:commands}\\}$0'
   '\\renewcommand':
     'prefix': '\\renewcommand'
-    'body': '\\\\newcommand$3\\{${1:existing command}\\}\\{${2:commands}\\}$0'
+    'body': '\\\\renewcommand$3\\{${1:existing command}\\}\\{${2:commands}\\}$0'
   'renewcommand':
     'prefix': 'renewcommand'
-    'body': '\\\\newcommand$3\\{${1:existing command}\\}\\{${2:commands}\\}$0'
+    'body': '\\\\renewcommand$3\\{${1:existing command}\\}\\{${2:commands}\\}$0'
   '\\newenvironment':
     'prefix': '\\newenvironment'
-    'body': '\\\\newcommand$4\\{${1:new environment}\\}\\{${2:begin commands}\\}\\{${3:end commands}\\}$0'
+    'body': '\\\\newenvironment$4\\{${1:new environment}\\}\\{${2:begin commands}\\}\\{${3:end commands}\\}$0'
   'newenvironment':
     'prefix': 'newenvironment'
-    'body': '\\\\newcommand$4\\{${1:new environment}\\}\\{${2:begin commands}\\}\\{${3:end commands}\\}$0'
+    'body': '\\\\newenvironment$4\\{${1:new environment}\\}\\{${2:begin commands}\\}\\{${3:end commands}\\}$0'
 
 # New document
   'newdoc':
