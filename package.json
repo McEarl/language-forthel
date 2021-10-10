@@ -8,7 +8,11 @@
     "naproche"
   ],
   "author": "Marcel Schütz",
-  "repository": "https://github.com/McEarl/language-forthel",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/McEarl/language-forthel"
+  },
+  "bugs": "https://github.com/McEarl/language-forthel/issues",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
