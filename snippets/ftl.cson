@@ -25,18 +25,18 @@
     'body': 'Corollary$1\\. $2'
   'top-level proof':
     'prefix': 'Proof'
-    'body': 'Proof$1.\n\t$2\nqed\\.'
+    'body': 'Proof$1.\n\t$2\nQed\\.'
 
   # Low-level proofs
 
   'low-level proof':
     'prefix': 'proof'
-    'body': 'proof$1\\.\n\t$2\nend\\.'
+    'body': 'proof$1\\.\n\t$2\nqed\\.'
   'case':
     'prefix': 'case'
     'body': 'Case $1\\.\n\t$2\nend\\.'
   'reference':
-    'prefix': 'reference'
+    'prefix': 'ref'
     'body': '\\(by ${1:label}\\)$2'
 
 
