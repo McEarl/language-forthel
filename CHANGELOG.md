@@ -2,6 +2,14 @@
 
 
 
+## 1.2.9
+
+### Fixed:
+
+* Fix package dependencies
+
+
+
 ## 1.2.8
 
 ### Fixed:
