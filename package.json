@@ -21,6 +21,9 @@
     "git-utils": "^5.7.1"
   },
   "package-deps": [
-    "language-latex2e"
+    {
+      "name": "language-latex2e",
+      "minimumVersion": "0.18.1"
+    }
   ]
 }
