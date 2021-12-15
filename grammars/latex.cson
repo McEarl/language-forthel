@@ -1,46 +1,1788 @@
-scopeName: 'text.tex.ftl-tex'
-name: 'ForTheL (TeX)'
-fileTypes: [ 'ftl.tex' ]
-limitLineLength: false
-maxTokensPerLine: 300
+# Large parts of this file were adopted from
+# https://github.com/Aerijo/language-latex2e.git under the terms of the MIT
+# license:
+#
+# Copyright (c) 2017 Aerijo
+# Copyright (c) 2021 Marcel Schütz
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+
+scopeName: 'text.tex.latex' # used on all text the `initialRule` is applied to.
+# For what initialRule is, see https://gist.github.com/Aerijo/b8c82d647db783187804e86fa0a604a1
+
+name: 'LaTeX' # aesthetic name to show in language selection menu
+fileTypes: [
+  'bbx'
+  'cbx'
+  'lbx'
+  'dbx'
+  'def'
+  'cls'
+  'lco'
+  'sty'
+  'tex'
+  'tikz'
+] # used by the automatic grammar selector as part of a "score" to assign the grammar to a file
+limitLineLength: false # don't truncate lines when tokenizing
+maxTokensPerLine: 300 # match up to 300 tokens per line. This setting is also changed by the ../lib/language-latex2e.js file
+
+# Atom uses the following regex engine -> https://github.com/kkos/oniguruma/blob/master/doc/RE
+
+# Rules to be implemented. Please add to repository and link to a 'meta' to include.
+# The following rules (mostly) correspond to the ten special latex characters.
+# They are applied at the outmost level, but can be called inside patterns by using `$self`
+
+# The order is largely irrelevant, as no rules should have the same start pattern.
 patterns: [
-  { include : '#envForthel' }
-  { include: '#envComment' }
-  { include: 'text.tex.latex' }
+  { include: '#metaControl' }
+  { include: '#metaPercent' }
+  { include: '#metaDollar' }
+  { include: '#metaTilde' }
+  { include: '#metaAmpersand' }
+  { include: '#metaOpenBrace' }
+  { include: '#metaCloseBrace' }
+  # { include: '#metaUnderscore' } # only good in math mode. User will get an error themselves if not set up properly for use in text.
+  { include: '#metaCaret' }
+  { include: '#metaHashtag' }
+  { include: '#metaOther' } # for specific things that do not fit in the above
 ]
+
 repository:
-  envForthel: {
-    commment: 'ForTheL environment (picked up from language-latex2e)'
+# Main meta groups; directly referenced in `patterns`
+  metaControl: {
+    comment: 'All these commands begin with a backslash.'
+    patterns: [
+      { include: '#doubleCaret' } # Temporary, to see if it works better this way.
+      { include: '#metaCommonControlSequences' }
+      { include: '#metaEnvironment' }
+      { include: '#metaDollar' } # Because of \( and \[. Must appear below escaped characters, to prevent \$ from being a false positive.
+
+      # The following rules are "catch alls" for any control sequences not explicitly addressed above.
+      { include: '#metaPrimitives' }
+      { include: '#controlSymbol' }
+      { include: '#controlWord' }
+    ]
+  }
+  metaPercent: {
+    comment: 'This is called when there is a lone percent sign (escaped covered by metaControl).'
+    patterns: [
+      { include: '#metaMagicComment' }
+      { include: '#lineComment' }
+    ]
+  }
+  metaDollar: {
+    comment: 'Called when $ sign found. Possibly deprecated by \( and \) (which is called in metaControl), but here for completeness. The previous statement did not make its meaning very clear.'
+    patterns: [
+      { include: '#displayMathMode' }
+      { include: '#inlineMathMode' }
+    ]
+  }
+  metaTilde: {
+    comment: 'This is only an unbreaking space (when alone).'
+    name: 'punctuation.space.latex'
+    match: '~'
+  }
+  metaAmpersand: {
+    comment: 'The ampersand normally represents alignment (catcode 4). Probably not useful (or legal) outside of align or table environment. However, it should be left this way to let users implement custom syntax.'
+    name: 'punctuation.alignment.latex'
+    match: '&'
+  }
+  metaOpenBrace: {
+    comment: 'This is useful to ensure balanced brackets for things like {$ math {nested math} math $}, as `}` ends mathmode (for other reasons).'
+    contentName: 'meta.group.braces.latex'
+    begin: '{'
+    beginCaptures:
+      0: name: 'punctuation.definition.group.begin.latex'
+    end: '}'
+    endCaptures:
+      0: name: 'punctuation.definition.group.end.latex'
+    patterns: [{ include: '$self' }]
+  }
+  metaCloseBrace: {
+    comment: 'To reach this means unbalanced brackets: THIS IS AN ERROR. I dont care if youre doing fancy file mish-mashing; DONT DO IT. The capture groups feels like a hack job to get multiple scopes on the same match, but oh well.'
+    captures:
+      0: name: 'invalid.illegal.latex'
+      1: name: 'punctuation.definition.group.end.latex'
+    match: '(})'
+  }
+  metaUnderscore: {
+    comment: 'Underscore means subscript. It will take an argument in brackets if possible. If not, just the single next character. Only valid when within mathmode. May address this later.'
+    name: 'markup.other.subscript.latex'
+    begin: '(\\_)\\s*'
+    beginCaptures:
+      1: name: 'punctuation.subscript.latex'
+    end: '(?<=[^\\_\\s])'
+    patterns: [{ include: '$self' }]
+  }
+  metaCaret: {
+    comment: 'Like underscore, but superscript'
+    patterns: [
+      { include: '#doubleCaret' }
+      {
+        comment: 'Matches a caret and following group'
+        name: 'markup.other.superscript.latex'
+        begin: '(\\^)[^\\S$]*?'
+        beginCaptures:
+          1: name: 'punctuation.superscript.latex'
+        end: '(?<=[^\\^\\s])|$'
+        patterns: [{ include: '$self' }]
+      }
+    ]
+  }
+  metaHashtag: {
+    comment: 'I dont like calling this the pound symbol. Catcode says it is a parameter identifier.'
+    match: '(\\#{3,}[1-9])|(\\#{2}[1-9])|(\\#[1-9])'
+    captures:
+      1: name: 'variable.parameter.hashtag.3.latex'
+      2: name: 'variable.parameter.hashtag.2.latex'
+      3: name: 'variable.parameter.hashtag.1.latex'
+  }
+  metaOther: {
+    patterns: [
+      {
+        comment: 'Finds value + unit pairs and scopes them for spell checkers.'
+        match: '\\d+(pt|mm|cm|in|ex|em|bp|pc|dd|cc|sp)\\b'
+        name: 'meta.definition.value.latex'
+      }
+    ]
+  }
+
+# Other meta groups
+  metaCommonControlSequences: {
+    comment: 'This is a collection of control sequences that are given specific rules. The ones here should be common to all users.'
+    patterns: [
+      { include: '#doubleBackslash' }
+      { include: '#escapedCharacter' }
+      { include: '#documentclass' }
+      { include: '#usepackage' }
+      { include: '#inputFile' }
+      { include: '#sectioning' }
+      # { include: '#makeAtSomething' } # Deprecated now that @ is valid everywhere (and interferes with files that use it at beginning & end)
+      { include: '#verbatim' }
+      { include: '#item' }
+      { include: '#metaHyperref' }
+      { include: '#text' } # Seems to work well!
+      { include: '#metaFontStyling' } # eg. \emph
+      { include: '#metaFootnote' }
+      { include: '#metaReferences' } # maybe include \ref \label as well?
+      { include: '#constants' } # words that represent constants
+      { include: '#catcode' } # and all the other <something>code commands
+
+      # Potential additions:
+      # { include: '#commandDefinitions' }
+      # { include: '#marginpar' }
+      # { include: '#verbScantokens' } # not sure what this is for
+    ]
+  }
+  metaEnvironment: {
+    comment: 'This collection can be used to give properties to specific environments.'
+    patterns: [
+      { include: '#envDocument' }
+      { include: '#envFigure' }
+      { include: '#metaEnvMath' }
+      { include: '#envList' }
+      { include: '#envGnuplot' }
+      { include: '#metaEnvMinted' }
+      { include: '#envLuaCode' }
+      { include: '#envVerbatim' }
+      { include: '#envTikz' }
+      { include: '#envTable' }
+      { include: '#envForTheL' }
+      { include: '#envComment' }
+      { include: '#envGeneric' }
+
+      # Potential additions:
+      # Better table rules; currently taken from language-latex
+      # { include: '#metaEnvListing' }
+      # More languages with minted
+    ]
+  }
+  metaPrimitives: {
+    comment: 'Allows organisation of various primitive sources'
+    patterns: [
+      # {
+      #   match: '((\\\\)catcode)\\s*\\`(.*?)='
+      #   captures:
+      #     1: name: 'entity.name.function.primitive.latex'
+      #     2: name: 'punctuation.definition.function.latex'
+      #     3: patterns: [{ include: '$self' }]
+      # }
+      { include: '#texPrimitives' }
+      { include: '#pdfTexPrimitives' }
+      { include: '#unsortedPrimitives' }
+    ]
+  }
+  metaFontStyling: {
+    comment: 'For commands that apply bold/italic/emph to text. The first ones are for LaTeX, the latter are plain TeX (deprecated)'
+    patterns: [
+      {
+        begin: '((\\\\)textbf)\\s*(\\{)'
+        beginCaptures:
+          1: name: 'support.function.textbf.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        contentName: 'markup.bold.latex'
+        patterns: [{ include: '$self' }]
+      }
+      {
+        begin: '((\\\\)textit)\\s*(\\{)'
+        beginCaptures:
+          1: name: 'support.function.textit.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        contentName: 'markup.italic.latex'
+        patterns: [{ include: '$self' }]
+      }
+      {
+        begin: '((\\\\)texttt)\\s*(\\{)'
+        beginCaptures:
+          1: name: 'support.function.texttt.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        contentName: 'markup.raw.texttt.latex'
+        patterns: [{ include: '$self' }]
+      }
+      {
+        begin: '((\\\\)emph)\\s*(\\{)'
+        beginCaptures:
+          1: name: 'support.function.emph.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        contentName: 'markup.italic.emph.latex'
+        patterns: [{ include: '$self' }]
+      }
+      {
+        comment: 'plain TeX; deprecated'
+        match: '((\\\\)(?:bf|it|rm|sc|sf|sl|tt))(?=[^a-zA-Z@])'
+        captures:
+          1: name: 'invalid.deprecated.font.latex'
+          2: name: 'punctuation.definition.function.latex'
+      }
+    ]
+  }
+  metaHyperref: {
+    comment: 'Intended to match the url commands provided by hyperref. Less lenient than I would like, but difficult to improve.'
+    patterns: [
+      {
+        comment: '\\href[options]{URL}{text}'
+        begin: '((\\\\)href)\\s*(?:(\\[)(.*?)(\\]))?\\s*(\\{)(.*?)(\\})(\\{)'
+        beginCaptures:
+          1: name: 'support.function.href.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.optional.begin.latex'
+          4: name: 'variable.parameter.optional.latex'
+          5: name: 'punctuation.definition.arguments.optional.end.latex'
+          6: name: 'punctuation.definition.arguments.begin.latex'
+          7: name: 'markup.underline.link.latex'
+          8: name: 'punctuation.definition.arguments.end.latex'
+          9: name: 'punctuation.definition.arguments.begin.latex'
+        end: '(\\}|^\\s*$)'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        contentName: 'variable.parameter.latex'
+        patterns: [{ include: '$self' }]
+      }
+      {
+        comment: '\\url{URL}'
+        match: '((\\\\)(?:nolink|hyperbase)url)(\\{)(.*?)(\\})'
+        captures:
+          1: name: 'support.function.url.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+          4: name: 'markup.underline.link.latex'
+          5: name: 'punctuation.definition.arguments.end.latex'
+      }
+      {
+        comment: '\\hyperimage{URL}{text}'
+        begin: '((\\\\)hyperimage)(\\{)(.*?)(\\})(\\{)'
+        beginCaptures:
+          1: name: 'support.function.url.image.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+          4: name: 'markup.underline.link.latex'
+          5: name: 'punctuation.definition.arguments.end.latex'
+          6: name: 'punctuation.definition.arguments.begin.latex'
+        end: '(\\}|^\\s*$)'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        contentName: 'variable.parameter.latex'
+        patterns: [{ include: '$self' }]
+      }
+      # {
+      #   comment: '\hyperdef{category}{name}{text}'
+      # }
+      {
+        comment: '\\hyperref{URL}{category}{name}{text}; will only attempt to match the URL part.'
+        match: '((\\\\)hyperref)(\\{)(.*?)(\\})'
+        captures:
+          1: name: 'support.function.url.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+          4: name: 'markup.underline.link.latex'
+          5: name: 'punctuation.definition.arguments.end.latex'
+      }
+    ]
+  }
+  metaFootnote: {
+    patterns: [
+      {
+        match: '(\\\\)footnotemark(?![a-zA-Z@])'
+        captures:
+          0: name: 'support.function.footnote.footnotemark.latex'
+          1: name: 'punctuation.definition.function.latex'
+      }
+      {
+        begin: '((\\\\)footnote(?:text)?)\\s*(\\{)'
+        beginCaptures:
+          1: name: 'support.function.footnote.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        contentName: 'meta.footnote.latex'
+        patterns: [{ include: '$self' }]
+      }
+    ]
+  }
+  metaReferences: {
+    comment: 'The following have all been taken (mostly) directly from language-latex.'
+    patterns: [
+      {
+        comment: 'Taken from language-latex'
+        begin: '((\\\\)(?:\\w*[rR]ef\\*?))(\\{)'
+        beginCaptures:
+          1: name: 'keyword.control.ref.latex'
+          2: name: 'punctuation.definition.keyword.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.begin.latex'
+        name: 'meta.reference.latex'
+        patterns: [
+          { include: '#controlWord' }
+          { include: '#controlSymbol' }
+          {
+            match: '[!\u0028-\u007A\u00A1-\u017F\u3001-\u30FF\u0391-\u03CE\u0410-\u044F\u4E00-\u9FFF\uFF0C\uFF0E]'
+            name: 'constant.other.reference.latex'
+          }
+        ]
+      }
+      {
+        comment: 'Taken from language-latex'
+        begin: '((\\\\)label)(\\{)'
+        beginCaptures:
+          1: name: 'keyword.control.label.latex'
+          2: name: 'punctuation.definition.keyword.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        name: 'meta.definition.latex'
+        patterns: [
+          { include: '#controlWord' }
+          { include: '#controlSymbol' }
+          {
+            match: '[!\u0028-\u007A\u00A1-\u017F\u3001-\u30FF\u0391-\u03CE\u0410-\u044F\u4E00-\u9FFF\uFF0C\uFF0E]'
+            name: 'constant.other.reference.latex'
+          }
+        ]
+      }
+      {
+        comment: 'Taken from language-latex'
+        begin: '''(?x)
+                  ((\\\\)(?:text)?(?:paren)?(?:auto)?(?:foot)?(?:full)?(?:no)?(?:short)?[cC]ites?(?:al)?(?:t|p|author|year(?:par)?|title)?[ANP]*\\*?)
+                  (?:(\\[)[^\\]]*(\\]))?
+                  (?:(\\[)[^\\]]*(\\]))?
+                  (\\{)
+               '''
+        captures:
+          1: name: 'keyword.control.cite.latex'
+          2: name: 'punctuation.definition.keyword.latex'
+          3: name: 'punctuation.definition.arguments.optional.begin.latex'
+          4: name: 'punctuation.definition.arguments.optional.end.latex'
+          5: name: 'punctuation.definition.arguments.optional.begin.latex'
+          6: name: 'punctuation.definition.arguments.optional.end.latex'
+          7: name: 'punctuation.definition.arguments.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.latex'
+        name: 'meta.citation.latex'
+        patterns: [
+          { include: '#controlWord' }
+          { include: '#controlSymbol' }
+          { include: '#metaHashtag' }
+          {
+            match: '[!\u0028-\u007A\u00A1-\u017F\u3001-\u30FF\u0391-\u03CE\u0410-\u044F\u4E00-\u9FFF\uFF0C\uFF0E]'
+            name: 'constant.other.reference.citation.latex'
+          }
+        ]
+      }
+      {
+        comment: 'Taken from language-latex'
+        begin: '(\\\\bibitem)(\\{)'
+        beginCaptures:
+          1: name: 'keyword.control.bibitem.latex'
+          2: name: 'punctuation.definition.arguments.begin.latex'
+        end: '\\}'
+        endCaptures:
+          0: name: 'punctuation.definition.arguments.end.latex'
+        patterns: [
+          { include: '#controlWord' }
+          { include: '#controlSymbol' }
+          {
+            match: '[!\u0028-\u007A\u00A1-\u017F\u3001-\u30FF\u0391-\u03CE\u0410-\u044F\u4E00-\u9FFF\uFF0C\uFF0E]'
+            name: 'constant.other.reference.bibitem.latex'
+          }
+        ]
+      }
+    ]
+  }
+
+# Other
+  catcode: {
+    # sfcode can take a macro as argument? Needs more work.
+    comment: 'Prevent catcoding from triggering mathmode; could be made more general into whenever a backtick is followed by math mode brackets'
+    match: '((\\\\)(?>cat|math|sf|del|uc|lo)code)\\s*\\`?(\\\\.(?!\\^))'
+    captures:
+      1: name: 'entity.name.function.primitive.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'variable.parameter.optional.latex'
+  }
+  escapedCharacter: {
+    comment: 'Finds escaped characters like \$ and \%. Uses this regex so unique capture groups can be used.'
+    name: 'constant.character.latex'
+    match: '\\\\(\\&|\\%|\\$|\\#|\\_|\\{|\\}|(textascii(tilde|circum)|textbackslash)(?=[^a-zA-Z@]))'
+  }
+  controlSymbol: {
+    comment: 'Mostly covered by escapedCharacter, but this is a catch all for any control symbols'
+    name: 'keyword.control.symbol.latex'
+    match: '\\\\([^a-zA-Z@]|@(?=[^a-zA-Z@]))'
+  }
+  controlWord: {
+    comment: 'A catch all for latex control words that have not already been identified.'
+    match: '(\\\\)([a-zA-Z@]+)'
+    captures:
+      0: name: 'support.function.general.latex'
+      1: name: 'punctuation.definition.function.latex'
+      2: name: 'support.function.general.tex'
+  }
+  accents: {
+    comment: 'For standard latex accent macros such as \^ or \`. Not used for now, at least until better rules are developed.'
+    name: 'constant.character.accent.latex'
+    match: '''\\\\([\\`\\'\\^\\"\\~\\=\\.]\\s*(\\w|\\{\\w?\\})|[Hcklbdruv]\\{\\w?\\})'''
+  }
+  lineComment: {
+    name: 'comment.line.percentage.latex'
+    begin: '%'
+    end: '$'
+    patterns: [{ include: '#metaMagicComment' }]
+  }
+  escapedCurlyBracket: {
+    comment: 'Escaped }. Possible deprecated by escapedCharacter.'
+    name: 'constant.character.latex'
+    match: '\\\\}|\\\\{'
+  }
+  usepackage: {
+    comment: 'Package finder. Similar to documentclass, but allows custom colours. A macro name is only valid with letters (exceptions apply--eg. makeatletter). This checks to see if the name is purely "usepackage" and the following character is not a legal part of the macro name.'
+    name: 'meta.preamble.latex'
+    begin: '\\\\usepackage(?=[^a-zA-Z@])'
+    beginCaptures:
+      0: name: 'keyword.control.preamble.latex'
+    end: '(?<=\\})|(^\\s*$)'
+    endCaptures:
+      1: name: 'invalid.illegal.latex'
+    patterns:[
+      { include: '#awaitingArgumentBrackets' }
+      {
+        comment: 'Only this one necessary because escaped characters will be picked up by awaitingArgumentBrackets.'
+        include: '#lineComment'
+      }
+      {
+        comment: 'Will try and find optional arguments first.'
+        include: '#optionalArgumentScope'
+      }
+      { include: '#altArgumentScope' }
+    ]
+  }
+  sectioning: {
+    comment: 'Covers all sectioning commands such as section, subsection, subparagraph, etc. The last four are KOMAscript specific.'
+    name: 'support.function.section.latex'
+    begin: '\\\\((sub){0,2}section|(sub){0,1}paragraph|part|chapter|addpart|addchap|addsec|minisec)(\\*)?(?=[^a-zA-Z@])'
+    beginCaptures:
+      0: name: 'entity.name.section.$1.latex'
+    end: '(?<=\\})|(^\\s*$)'
+    endCaptures:
+      1: name: 'invalid.illegal.latex'
+    patterns: [
+      { include: '#awaitingArgumentBrackets' }
+      {
+        comment: 'Only this one necessary because escaped characters will be picked up by awaitingArgumentBrackets.'
+        include: '#lineComment'
+      }
+      {
+        comment: 'Will try and find optional arguments first.'
+        include: '#optionalArgumentScope'
+      }
+      { include: '#argumentScope' }
+    ]
+  }
+  doubleBackslash: {
+    match: '\\\\\\\\'
+    name: 'constant.character.newline.latex'
+  }
+  commentMeta: {
+    comment: 'Main purpose is to distinguish escaped % from comments. Deprecated.'
+    patterns: [
+      { include: '#doubleBackslash' }
+      { include: '#escapedCharacter' }
+      { include: '#metaMagicComment' }
+      { include: '#lineComment' }
+    ]
+  }
+  metaMagicComment: {
+    patterns: [
+      {
+        comment: 'Simplify syntax highlighting until the next magic syntax comment'
+        begin: '% !(?>T[eE]X) syntax\\s*=\\s*plain\\s*$'
+        beginCaptures: 0: name: 'keyword.control.magic.syntax.plain.latex'
+        end: '(?=% !T[eE]X syntax)'
+        contentName: 'meta.syntax.plain.latex'
+        patterns: [{ include: '#syntaxPlain'}]
+      }
+      {
+        comment: 'Forces mathmode until the next magic syntax comment'
+        begin: '% !(?>T[eE]X) syntax\\s*=\\s*math\\s*$'
+        beginCaptures: 0: name: 'keyword.control.magic.syntax.math.latex'
+        end: '(?=% !T[eE]X syntax)'
+        contentName: 'markup.other.math.latex'
+        patterns: [{ include: '$self' }]
+      }
+      {
+        comment: 'Forces out of mathmode. Actually implemented in the mathMode patterns, as I dont know how to force an exit indirectly.'
+        match: '% !(?>T[eE]X) syntax\\s*=\\s*text\\s*$'
+        captures: 0: name: 'keyword.control.magic.syntax.text.latex'
+      }
+      {
+        begin: '% !(?>T[eE]X) syntax\\s*=\\s*verbatim\\s*$'
+        beginCaptures: 0: name: 'keyword.control.magic.syntax.verbatim.latex'
+        end: '(?=% !T[eE]X syntax)'
+        contentName: 'markup.raw.verbatim.latex'
+      }
+      {
+        begin: '% !(?>T[eE]X) syntax\\s*=\\s*none\\s*$'
+        beginCaptures: 0: name: 'keyword.control.magic.syntax.verbatim.latex'
+        end: '(?=% !T[eE]X syntax)'
+        contentName: 'meta.syntax.none.latex'
+      }
+      {
+        comment: 'Can be improved to change color depending if the command matches a known string'
+        name: 'comment.line.percentage.latex'
+        captures: 0: name: 'keyword.control.magic.latex'
+        match: '''(?x)   # Allow comments like this. More of an educational thing, really, for anyone reading this.
+                 ((        # Capture groups 1 & 2
+                   (%)     # Capture percent sign
+                   (\\ !(?>T[eE]X|BIB)\\ )  # See https://github.com/kkos/oniguruma/blob/771535fce64f225f9fa2f965dbb55277e18fbde9/doc/RE#L252 for ?>
+                   (\\S+)    # A word (this is required as far as I know)
+                   )       # End capture group 2
+                   (\\ = \\ )  # Match = with space (required)
+                 )         # End capture group 1
+                 .*$       # To end; some options have spaces
+               '''
+      }
+    ]
+  }
+  syntaxPlain: {
+    comment: 'This is bare minimum that should work in most cases. It does not attempt to match pairs of anything, or specific constructions; just control sequences'
+    patterns: [
+      { include: '#lineComment' }
+      { include: '#metaPrimitives' }
+      { include: '#metaAmpersand' }
+      { include: '#metaTilde' }
+
+      { include: '#metaHashtag' }
+      { include: '#doubleCaret' }
+      { include: '#constants' }
+      { include: '#numericConstants' }
+      {
+        comment: 'Does not look for matching, just shows it is there'
+        match: '(\\$\\$)|(\\$)'
+        captures:
+          1: name: 'markup.other.math.display.latex'
+          2: name: 'markup.other.math.inline.latex'
+      }
+      {
+        comment: 'Does not look for matching, just shows it is there'
+        match: '(\\\\\\()|(\\\\\\))|(\\\\\\[)|(\\\\\\])'
+        captures:
+          1: name: 'markup.other.math.inline.begin.latex'
+          2: name: 'markup.other.math.inline.end.latex'
+          3: name: 'markup.other.math.display.begin.latex'
+          4: name: 'markup.other.math.display.end.latex'
+      }
+      {
+        match: '(\\{)|(\\})'
+        captures:
+          1: name: 'punctuation.definition.group.begin.latex'
+          2: name: 'punctuation.definition.group.end.latex'
+      }
+      { include: '#controlSymbol' }
+      { include: '#controlWord' }
+
+    ]
+  }
+  documentclass: {
+    comment: 'Documentclass finder.'
+    name: 'meta.preamble.latex'
+    begin: '\\\\documentclass(?=[^a-zA-Z@])'
+    beginCaptures:
+      0: name: 'keyword.control.preamble.latex'
+    end: '(?<=\\})|(^\\s*$)'
+    endCaptures:
+      1: name: 'invalid.illegal.latex'
+    patterns:[
+      { include: '#awaitingArgumentBrackets' }
+      { include: '#lineComment' }
+      { include: '#optionalArgumentScope' }
+      { include: '#altArgumentScope' }
+    ]
+  }
+  awaitingArgumentBrackets: {
+    comment: 'Anything not whitespace, opening bracket or comment will be flagged as invalid.illegal. Should take priority over other matches (even comments, as comments have the escaped % exception).'
+    match: '[^{\\[\\s%]+'
+    name: 'invalid.illegal.latex'
+  }
+  optionalArgumentScope: {
+    comment: 'Matches options brackets and everything inside them.'
+    contentName: 'variable.parameter.optional.latex'
+    begin: '\\['
+    beginCaptures:
+      0: name: 'punctuation.definition.optional.begin.latex'
+    end: '\\]'
+    endCaptures:
+      0: name: 'punctuation.definition.optional.end.latex'
+    patterns: [
+      {
+        comment: 'AFAIK, the optional parameters never have nested brackets. Will come back to this after a while or if I find they do.'
+        include: '#commentMeta'
+      }
+      { include: '#escapedCurlyBracket' }
+      { include: '#metaOpenBrace' }
+    ]
+  }
+  argumentScope: {
+    comment: 'Matches arguments brackets (the outmost of nested brackets). Is a general rule to use anywhere.'
+    contentName: 'variable.parameter.arguments.latex'
+    begin: '\\{'
+    beginCaptures:
+      0: name: 'punctuation.definition.arguments.begin.latex'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: '$self' }]
+  }
+  altArgumentScope: {
+    comment: 'Matches arguments brackets (the outmost of nested brackets). Specifically for commands like usepackage.'
+    contentName: 'support.class.latex'
+    begin: '\\{'
+    beginCaptures:
+      0: name: 'punctuation.definition.arguments.begin.latex'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: '$self' }]
+  }
+  nestedSquareBrackets: {
+    contentName: 'variable.parameter.optional.latex'
+    begin: '\\['
+    beginCaptures:
+      0: name: 'punctuation.definition.optional.begin.latex'
+    end: '\\]'
+    endCaptures:
+      0: name: 'punctuation.definition.optional.end.latex'
+    patterns: [
+      comment: 'Optimisation good to implement here. Rework commentMeta to be a more general check for escaped characters and comments'
+      { include: '#commentMeta' }
+      { include: '#escapedCloseSquareBracket' }
+      { include: '#nestedSquareBrackets' }
+    ]
+  }
+  inlineMathMode: {
+    comment: 'This can be triggered using $ or \( \). Both can be used in the same pair.'
+    contentName: 'markup.other.math.inline.latex'
+    begin: '(\\$)|(\\\\\\()'
+    beginCaptures:
+      0: name: 'markup.other.math.inline.begin.latex'
+    end: '(\\$)|(\\\\\\))|(?=\\})'
+    endCaptures:
+      0: name: 'markup.other.math.inline.end.latex'
+    patterns: [
+      {
+        comment: 'When in inline math, the exit can only be $ or \)'
+        name: 'invalid.illegal.latex'
+        match: '(\\\\(\\[|\\(|\\)))'
+      }
+      { include: '#metaUnderscore'}
+      { include: '$self' }
+    ]
+  }
+  displayMathMode: {
+    comment: 'This can be triggered using $$ or \[ \]. Both can be used in the same pair.'
+    contentName: 'markup.other.math.display.latex'
+    begin: '(\\$\\$)|(\\\\\\[)'
+    beginCaptures:
+      0: name: 'markup.other.math.display.begin.latex'
+      1: name: 'invalid.deprecated.latex'
+    end: '(\\$\\$)|(\\\\\\])|(?=\\})|((?=% !T[eE]X syntax))'
+    endCaptures:
+      0: name: 'markup.other.math.display.end.latex'
+      1: name: 'invalid.deprecated.latex'
+    patterns: [
+      {
+        comment: 'When in display math, the exit can only be $$ or \]'
+        name: 'invalid.illegal.latex'
+        match: '(?<=[^\\\\])(\\$)(?=[^\\$])|(\\\\(\\[|\\(|\\)))'
+      }
+      { include: '#metaUnderscore'}
+      { include: '$self' }
+    ]
+  }
+  inputFile: {
+    patterns: [
+      {
+        comment: 'Matches the input/include command and allows custom path colours. Braces are technically optional, but the command will only be recognised if present.'
+        contentName: 'variable.parameter.arguments.latex'
+        begin: '((\\\\)(input|include))\\s*(\\{)'
+        beginCaptures:
+          1: name: 'keyword.control.$3.latex'
+          2: name: 'punctuation.definition.function.latex'
+          4: name: 'punctuation.definition.arguments.begin.latex'
+        end: '(\\})'
+        endCaptures:
+          1: name: 'punctuation.definition.arguments.end.latex'
+        patterns: [
+          { include: '$self' }
+          # { include: '#controlWord' }
+          # { include: '#controlSymbol' }
+        ]
+      }
+      {
+        comment: 'For alternative syntax without braces'
+        match: '((\\\\)(input|include))\\s+(.*?)(?:\\s|$)' # Add in (?!a-zA-Z@) check
+        captures:
+          1: name: 'keyword.control.$3.latex'
+          2: name: 'punctuation.definition.function.latex'
+          4: patterns: [
+            { include: '#escapedCharacter' }
+            { include: '#controlWord' }
+            { include: '#controlSymbol' }
+            { include: '#lineComment' }
+            # { include: '#filePathScope' }
+          ]
+      }
+    ]
+  }
+  filePathScope: {
+    comment: 'Matches a file path (UNIX only, add Windows yourself reader). CURRENTLY BROKEN'
+    # patterns: [
+    #   { include: '#controlWord' }
+    #   { include: '#controlSymbol' }
+    #   {
+    #     name: 'support.filepath.back.latex'
+    #     match: '\\.{2,}\\/'
+    #   }
+    #   {
+    #     name: 'support.filepath.home.latex'
+    #     match: '\\.\\/'
+    #   }
+    #   {
+    #     name: 'support.filepath.root.latex'
+    #     match: '(?<=\\{)\\/'
+    #   }
+    #   {
+    #     name: 'support.filepath.directory.latex'
+    #     match: '[^(?:\\.+\\/)]([^%\\{\\}]*?)\\/'
+    #     captures:
+    #       1: patterns: [
+    #         { include: '#controlWord' }
+    #         { include: '#controlSymbol' }
+    #       ]
+    #   }
+    #   {
+    #     name: 'support.filepath.file.latex'
+    #     match: '([^%\\{\\}]*)'
+    #     captures:
+    #       1: patterns: [
+    #         { include: '#controlWord' }
+    #         { include: '#controlSymbol' }
+    #       ]
+    #   }
+    # ]
+  }
+  verbatim: {
+    comment: 'Finds an inline verbatim string of the format \\verb+...+'
+    name: 'string.function.verbatim'
+    match: '\\\\(?:verb|hsk)([^a-zA-Z])(.*?)(?:(\\1)|$)'
+    captures:
+      0: name: 'support.function.vebatim.latex'
+      1: name: 'punctuation.latex'
+      2: name: 'markup.raw.verbatim.latex'
+      3: name: 'punctuation.latex'
+  }
+  item: {
+    comment: 'This command is still defined everywhere'
+    name: 'keyword.control.latex'
+    match: '\\\\item(?![a-zA-Z@])'
+  }
+
+  # Environments
+  envGeneric: {
+    comment: 'Matches environments not recognised by other rules. Less lenient with random formatting here, it is expected to all be on one line.'
+    name: 'meta.environment.general.$5.latex'
+    begin: '((\\\\)begin)(\\{)((\\w+)\\*?)(\\})(?:(\\[)(.*)(\\]))?'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8:
+        name: 'variable.parameter.optional.function.environment.latex'
+        patterns: [{ include: '$self' }]
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})|(?=})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: '$self' }]
+  }
+  envForTheL: {
+    name: 'meta.environment.forthel.latex'
     begin: '((\\\\)begin)(\\{)(forthel)(\\})'
     beginCaptures:
       1: name: 'support.function.environment.begin.latex'
       2: name: 'punctuation.definition.function.begin.latex'
       3: name: 'punctuation.definition.arguments.begin.latex'
-      4: name: 'entity.name.tag.latex'
+      4: name: 'variable.parameter.function.latex'
       5: name: 'punctuation.definition.arguments.end.latex'
-    end: '((\\\\)end)(\\{)(forthel)(\\})'
+    end: '((\\\\)end)(\\{)(\\4)(\\})|(?=})'
     endCaptures:
       1: name: 'support.function.environment.end.latex'
       2: name: 'punctuation.definition.function.latex'
       3: name: 'punctuation.definition.arguments.begin.latex'
-      4: name: 'entity.name.tag.latex'
+      4: name: 'variable.parameter.function.latex'
       5: name: 'punctuation.definition.arguments.end.latex'
-    patterns: [{ include: 'text.tex.ftl-tex.latex-ftl' }]
+    patterns: [
+      { include: '#lineComment' }
+      { include: '#ftlDenote' }
+      { include: '#ftlInlineMathMode' }
+      { include: '#ftlInstruction' }
+      { include: '#ftlTopLevelSection' }
+      { include: '#ftlProof' }
+    ]
+  }
+  ftlTopLevelSection: {
+    begin: '(((\\\\)begin)\\s*(\\{)(definition|signature|axiom|theorem|proposition|lemma|corollary)(\\}))\\s*((\\[)([^\\]]+)(\\]))?(((\\\\)label)\\s*(\\{)([a-zA-Z0-9_]+)(\\}))?'
+    beginCaptures:
+      # "\begin{...}":
+      2: name: 'support.function.environment.begin.latex'
+      3: name: 'punctuation.definition.function.begin.latex'
+      4: name: 'punctuation.definition.arguments.begin.latex'
+      5: name: 'variable.parameter.function.latex'
+      6: name: 'punctuation.definition.arguments.end.latex'
+      # "[...]":
+      8: name: 'punctuation.definition.arguments.optional.begin.latex'
+      9: {
+        name: 'variable.parameter.optional.function.environment.latex'
+        patterns: [{ include: '$self' }]
+      }
+      10: name: 'punctuation.definition.arguments.optional.end.latex'
+      # "\label{...}":
+      12: name: 'keyword.control.label.latex'
+      13: name: 'punctuation.definition.keyword.latex'
+      14: name: 'punctuation.definition.arguments.begin.latex'
+      15: name: 'constant.other.reference.latex'
+      16: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)\\s*(\\{)(\\5)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [
+      { include: '#lineComment' }
+      { include: '#ftlDisplayMathMode' }
+      { include: '#ftlInlineMathMode' }
+      { include: '#doubleBackslash' }
+      { include: '#ftlAssume' }
+    ]
+  }
+  ftlProof: {
+    begin: '((\\\\)begin)(\\{)(proof)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [
+      { include: '#lineComment' }
+      { include: '#ftlDisplayMathMode' }
+      { include: '#ftlInlineMathMode' }
+      { include: '#ftlInstruction' }
+      { include: '#doubleBackslash' }
+      { include: '#ftlReference' }
+      { include: '#nameref' }
+      { include: '#instruction' }
+      { include: '#ftlLowLevelTheorem' }
+      { include: '#ftlAssume' }
+      { include: '#ftlTake' }
+      { include: '#ftlDefine' }
+      { include: '#ftlLowLevelProof' }
+    ]
+  }
+  ftlReference: {
+    begin: '((\\\\)(ref|nameref))\\s*(\\{)'
+    beginCaptures:
+      1: name: 'keyword.control.label.latex'
+      2: name: 'punctuation.definition.keyword.latex'
+      4: name: 'punctuation.definition.arguments.begin.latex'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex'
+    name: 'constant.other.reference.latex'
+  }
+  ftlInstruction: {
+    patterns: [
+      { include: '#ftlArgumentInstr' }
+      { include: '#ftlFlagInstr' }
+      { include: '#ftlLimitInstr' }
+      { include: '#ftlCommandInstr' }
+      { include: '#ftlDropInstr' }
+      { include: '#ftlInvalidInstr' }
+    ]
+  }
+  ftlArgumentInstr: {
+    match: '(\\[)(\\ *)(read|readtex|library|prover|provers|synonym)(\\ +)((((\\\\)path)(\\{)([^\\}]+)(\\})([^\\]\\ ]*))|([^\\]]+))(\\ *)(\\])'
+    captures:
+      0:  name: 'variable.language.instruction.latex'
+      3:  name: 'variable.language.instruction.argument.latex'
+      7:  name: 'entity.name.function.primitive.latex'          # "\path"
+      8:  name: 'punctuation.definition.function.begin.latex'   # The backslash in "\path"
+      9:  name: 'punctuation.definition.function.begin.latex'   # "{"
+      10: name: 'variable.parameter.function.latex'             # The actual argument
+      11: name: 'punctuation.definition.arguments.end.latex'    # "}"
+      12: name: 'invalid.illegal.latex'                         # Any non-whitespace between the closing "}" of "\path{...}" and the closing "]" of the instrucion
+      13: name: 'variable.parameter.function.latex'             # The actual argument (when not within "\path{...}")
+  }
+  ftlFlagInstr: {
+    match: '(\\[)(\\ *)(prove|checkconsistency|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|unfold|unfoldsf|unfoldlow|unfoldlowsf|translation|tex)(\\ +)((on|off|yes|no)|([^\\]\\ ]*))(\\ *)(\\])'
+    captures:
+      0: name: 'variable.language.instruction.latex'
+      3: name: 'variable.language.instruction.flag.latex'
+      6: name: 'variable.parameter.function.latex'          # Any valid argument
+      7: name: 'invalid.illegal.latex'                      # Any invalid argument
+  }
+  ftlLimitInstr: {
+    match: '(\\[)(\\ *)(timelimit|depthlimit|checktime|checkdepth)(\\ +)(([0-9]+)|([^\\]\\ ]*))(\\ *)(\\])'
+    captures:
+      0: name: 'variable.language.instruction.latex'
+      3: name: 'variable.language.instruction.limit.latex'
+      6: name: 'variable.parameter.function.latex'          # Any valid argument
+      7: name: 'invalid.illegal.latex'                      # Any invalid argument
+  }
+  ftlCommandInstr: {
+    match: '(\\[)(\\ *)(exit|quit|thesis|context|filter|rules)(\\ *)(\\])'
+    captures:
+      0: name: 'variable.language.instruction.latex'
+      3: name: 'variable.language.instruction.command.latex'
+  }
+  ftlDropInstr: {
+    match: '(\\[)(\\ *)(/(\\ *)(prove|checkconsistency|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|unfold|unfoldsf|unfoldlow|unfoldlowsf|translation|tex|timelimit|depthlimit|checktime|checkdepth))(\\ *)(\\])'
+    captures:
+      0: name: 'variable.language.instruction.latex'
+      3: name: 'variable.language.instruction.drop.latex'
+  }
+  ftlAssume: {
+    match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume)\\b'
+    name: 'keyword.control.ftlkeyword.assume.latex'
+  }
+  ftlDenote: {
+    match: '(\\b[Ll]et\\b)|(\\bdenote\\b)|(\\bstand\\b\\ +\\bfor\\b)'
+    name: 'keyword.control.ftlkeyword.denote.latex'
+  }
+  ftlTake: {
+    match: '\\b([Tt]ake|[Cc]hoose|[Cc]onsider)\\b'
+    name: 'keyword.control.ftlkeyword.take.latex'
+  }
+  ftlDefine: {
+    match: '\\b([Dd]efine)\\b'
+    name: 'keyword.control.ftlkeyword.define.latex'
+  }
+  ftlLowLevelProof: {
+    comment: '''
+      These keywords should begin with an upper-case letter to prevent
+      highlighting them in case they are nouns or adjective as in "an end of a
+      functor" or "a trivial divisor of a number".
+    '''
+    match: '\\b(Proof|Case|Indeed|Q[Ee][Dd]|E[Nn][Dd]|Obvious|Trivial)\\b'
+    name: 'entity.name.section.ftlkeyword.lowlevelproof.latex'
+  }
+  ftlLowLevelTheorem: {
+    match: '((\\b[Ll]et\\b\\ +\\bus\\b)|(\\b[Ww]e\\b\\ +\\bcan\\b))\\ +(\\b(show|prove|demonstrate)\\b)'
+    name: 'entity.name.section.ftlkeyword.lowleveltheoremlatex'
+  }
+  ftlFunctionChoice: {
+    match: '\\b([Dd]efine|[Cc]hoose)\\b'
+    name: 'keyword.control.ftlkeyword.functionchoice.latex'
+  }
+  ftlClass: {
+    comment: 'class term pattern'
+    begin: '((\\\\)class)\\s*(\\{)'
+    beginCaptures:
+      1: name: 'support.function.text.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [
+      { include: '#ftlProofText' }
+      { include: '#ftlClassText' }
+      { include: '$self' }
+    ]
+  }
+  ftlProofText: {
+    comment: 'modified text environment for low-level function definitions'
+    begin: '((\\\\)text)\\s*(\\{)'
+    beginCaptures:
+      1: name: 'support.function.text.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex'
+    contentName: 'variable.parameter.latex'
+    patterns: [
+      { include: '#inlineMathMode' }
+      { include: '#ftlFunctionChoice' }
+    ]
+  }
+  ftlClassText: {
+    comment: 'modified text environment for low-level function definitions'
+    begin: '((\\\\)classtext)\\s*(\\{)'
+    beginCaptures:
+      1: name: 'support.function.text.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex'
+    contentName: 'variable.parameter.latex'
+    patterns: [
+      { include: '#inlineMathMode' }
+    ]
+  }
+  ftlInlineMathMode: {
+    comment: 'modified inline math mode for low-level function definitions'
+    contentName: 'markup.other.math.inline.latex'
+    begin: '\\$'
+    beginCaptures:
+      0: name: 'markup.other.math.inline.begin.latex'
+    end: '(\\$)|(?=\\})'
+    endCaptures:
+      0: name: 'markup.other.math.inline.end.latex'
+    patterns: [
+      {
+        comment: 'When in inline math, the exit can only be $ or \)'
+        name: 'invalid.illegal.latex'
+        match: '(\\\\(\\[|\\(|\\)))'
+      }
+      { include: '#ftlProofText' }
+      { include: '#ftlClass' }
+      { include: '$self' }
+    ]
+  }
+  ftlDisplayMathMode: {
+    comment: 'modified display math mode for low-level function definitions'
+    contentName: 'markup.other.math.display.latex'
+    begin: '(\\$\\$)|(\\\\\\[)'
+    beginCaptures:
+      0: name: 'markup.other.math.display.begin.latex'
+      1: name: 'invalid.deprecated.latex'
+    end: '(\\$\\$)|(\\\\\\])|(?=\\})|((?=% !T[eE]X syntax))'
+    endCaptures:
+      0: name: 'markup.other.math.display.end.latex'
+      1: name: 'invalid.deprecated.latex'
+    patterns: [
+      {
+        comment: 'When in display math, the exit can only be $$ or \]'
+        name: 'invalid.illegal.latex'
+        match: '(?<=[^\\\\])(\\$)(?=[^\\$])|(\\\\(\\[|\\(|\\)))'
+      }
+      { include: '#ftlProofText' }
+      { include: '#ftlClass' }
+      { include: '$self' }
+    ]
   }
   envComment: {
+    name: 'meta.environment.comment.latex'
+    contentName: 'comment.block.latex'
     begin: '((\\\\)begin)(\\{)(comment)(\\})'
     beginCaptures:
-      1: name: 'support.function.environment.begin.ftl-tex'
-      2: name: 'punctuation.definition.function.begin.ftl-tex'
-      3: name: 'punctuation.definition.arguments.begin.ftl-tex'
-      4: name: 'variable.parameter.function.ftl-tex'
-      5: name: 'punctuation.definition.arguments.end.ftl-tex'
-    end: '((\\\\)end)(\\{)(comment)(\\})'
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})'
     endCaptures:
-      1: name: 'support.function.environment.end.ftl-tex'
-      2: name: 'punctuation.definition.function.ftl-tex'
-      3: name: 'punctuation.definition.arguments.begin.ftl-tex'
-      4: name: 'variable.parameter.function.ftl-tex'
-      5: name: 'punctuation.definition.arguments.end.ftl-tex'
-    contentName: 'comment.block.latex'
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+  }
+  envDocument: {
+    comment: 'To stop the entire contents of the document environment being labelled. Its useless anyway, as I split up my work and just include it into the main file.'
+    match: '((\\\\)(begin|end))(\\{)(document)(\\})'
+    captures:
+      1: name: 'support.function.environment.$3.document.latex'
+      2: name: 'punctuation.definition.function.latex'
+      # 3: This is for the first group scopes
+      4: name: 'punctuation.definition.arguments.begin.latex'
+      5: name: 'variable.parameter.function.document.latex'
+      6: name: 'punctuation.definition.arguments.end.latex'
+  }
+  envFigure: {
+    comment: 'Matches the common figure environment'
+    name: 'meta.environment.float.$5.latex'
+    begin: '((\\\\)begin)(\\{)((figure)\\*?)(\\})(?:(\\[)(.*)(\\]))?'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8:
+        name: 'variable.parameter.optional.function.environment.latex'
+        patterns: [{ include: '$self' }]
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})|(?=})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: '$self' }]
+  }
+  metaEnvMath: {
+    patterns: [
+      {
+        comment: 'Matches generic math environments'
+        name: 'meta.environment.math.$5.latex'
+        contentName: 'markup.other.math.block.$5.latex'
+        begin: '((\\\\)begin)(\\{)((align(?:ed)?|equation|multline|split|gather(?:ed)?)\\*?)(\\})(?:(\\[)(.*)(\\]))?'
+        beginCaptures:
+          1: name: 'support.function.environment.begin.latex'
+          2: name: 'punctuation.definition.function.begin.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+          4: name: 'variable.parameter.function.latex'
+          # 5: Used for meta scope name (basically just non starred version)
+          6: name: 'punctuation.definition.arguments.end.latex'
+          7: name: 'punctuation.definition.arguments.optional.begin.latex'
+          8:
+            name: 'variable.parameter.optional.function.environment.latex'
+            patterns: [{ include: '$self' }]
+          9: name: 'punctuation.definition.arguments.optional.end.latex'
+        end: '((\\\\)end)(\\{)(\\4)(\\})|(?=})'
+        endCaptures:
+          1: name: 'support.function.environment.end.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+          4: name: 'variable.parameter.function.latex'
+          5: name: 'punctuation.definition.arguments.end.latex'
+        patterns: [{ include: '$self' }]
+      }
+      {
+        comment: 'Matches the alignat environment'
+        name: 'meta.environment.math.$5.latex'
+        contentName: 'markup.other.math.block.$5.latex'
+        begin: '((\\\\)begin)(\\{)((alignat)\\*?)(\\})(?:(\\{)(.*?)(\\}))?'
+        beginCaptures:
+          1: name: 'support.function.environment.begin.latex'
+          2: name: 'punctuation.definition.function.begin.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+          4: name: 'variable.parameter.function.latex'
+          # 5: Used for meta scope name (basically just non starred version)
+          6: name: 'punctuation.definition.arguments.end.latex'
+          7: name: 'punctuation.definition.arguments.begin.latex'
+          8:
+            name: 'variable.parameter.function.latex'
+            patterns: [
+              { include: '#numericConstants' }
+              { include: '$self' }
+            ] # This is amazing! It works!
+          9: name: 'punctuation.definition.arguments.end.latex'
+        end: '((\\\\)end)(\\{)(\\4)(\\})|(?=})'
+        endCaptures:
+          1: name: 'support.function.environment.end.latex'
+          2: name: 'punctuation.definition.function.latex'
+          3: name: 'punctuation.definition.arguments.begin.latex'
+          4: name: 'variable.parameter.function.latex'
+          5: name: 'punctuation.definition.arguments.end.latex'
+        patterns: [{ include: '$self' }]
+      }
+    ]
+  }
+  envList: {
+    comment: 'Matches itemize|enumerate|description environment'
+    contentName: 'meta.environment.list.$5.latex'
+    begin: '((\\\\)begin)(\\{)((itemize|enumerate|description)\\*?)(\\})(?:(\\[)(.*)(\\]))?'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8:
+        name: 'variable.parameter.optional.function.environment.latex'
+        patterns: [{ include: '$self' }]
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})|(?=})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: '$self' }]
+  }
+  envVerbatim: {
+    comment: 'Matches verbatim environment.'
+    name: 'meta.environment.verbatim.latex'
+    contentName: 'markup.raw.verbatim.latex'
+    begin: '((\\\\)begin)(\\{)(([vV]erbatim|alltt))(\\})(?:(\\[)(.*)(\\]))?'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      # 5: Here to keep numbering consistent with other environments
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8:
+        name: 'variable.parameter.optional.function.environment.latex'
+        patterns: [{ include: '$self' }]
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+  }
+  envGnuplot: {
+    comment: 'Matches gnuplot env.'
+    name: 'meta.environment.embedded.$5.latex'
+    contentName: 'source.embedded.gnuplot'
+    begin: '((\\\\)begin)(\\{)((gnuplot)\\*?)(\\})(?:(\\[)(.*)(\\]))?'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      # 5: Used for $4 and meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8:
+        name: 'variable.parameter.optional.function.environment.latex'
+        patterns: [{ include: '$self' }]
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})|(?=})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.gnuplot' }]
+  }
+  envLuaCode: {
+    name: 'meta.environment.embedded.$5.latex'
+    contentName: 'source.embedded.lua'
+    begin: '((\\\\)begin)(\\{)((luacode)\\*?)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.lua' }] # The l-latex package has complicated stuff here, so this might break
+  }
+  envTikz: {
+    comment: 'The manual shows it can take an optional argument that may be several lines. This will be ignored for now.'
+    name: 'meta.environment.embedded.$5.latex'
+    contentName: 'source.embedded.tikz'
+    begin: '((\\\\)begin)(\\{)((tikzpicture)\\*?)(\\})(?:(\\[)(.*?)(\\]))?'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8:
+        name: 'variable.parameter.optional.function.environment.tikz.latex'
+        patterns: [
+          { include: '#tikzOptions' }
+          { include: '$self' }
+        ]
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'text.tex.latex.tikz' }] # The l-latex package has complicated stuff here, so this might break
+  }
+  envTable: {
+    comment: 'The following is taken verbatim (sans key quotes) from language-latex'
+    begin: '''(?x)
+              (?:\\s*)
+              ((\\\\)begin)
+              (\\{)
+              (array|tabular[xy*]?)
+              (\\})
+              (\\s*)?
+           '''
+    captures:
+      1: name: 'support.function.begin.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    contentName: 'meta.data.environment.tabular.latex'
+    end: '''(?x)
+            (?:\\s*)
+            ((\\\\)end)
+            (\\{)
+            (\\4)
+            (\\})
+            (?:\\s*)?|(?=})
+         '''
+    name: 'meta.function.environment.tabular.latex'
+    patterns: [
+      {
+        match: '\\\\\\\\'
+        name: 'punctuation.definition.table.row2.latex'
+      }
+      {
+        begin: '(?:^|(?<=\\\\\\\\))(?!\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))'
+        end: '(?=\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))'
+        name: 'meta.row2.environment.tabular.latex'
+        patterns: [
+          {
+            match: '&'
+            name: 'punctuation.definition.table.cell.latex'
+          }
+          {
+            begin: '(?:^|(?<=&))((?!&|\\\\\\\\|$))'
+            end: '(?=&|\\\\\\\\|\\s*\\\\end\\{(?:tabular|array))'
+            name: 'meta.cell.environment.tabular.latex'
+            patterns: [
+              {
+                include: '$base'
+              }
+            ]
+          }
+          {
+            include: '$base'
+          }
+        ]
+      }
+      {
+        include: '$base'
+      }
+    ]
+  }
+  metaEnvMinted: {
+    comment: 'This groups together all the minted languages supported by this grammar. See the bottom for each pattern.'
+    patterns: [
+      { include: '#mintPython' }
+      { include: '#mintJavascript' }
+      { include: '#mintJSON' }
+      { include: '#mintCoffeescript'}
+      { include: '#mintCSS'}
+      { include: '#mintLess'}
+      { include: '#mintXML'}
+      { include: '#mintRuby'}
+      { include: '#mintGeneric' }
+    ]
+  }
+
+  # Experimental
+  unitMeasure: {
+    comment: 'This will likely be merged into a different rule. Currently doesnt work.'
+    name: 'constant.numeric.latex'
+    match: '\\b((\\+|\\-)\\s*)?((\\d+(\\.|\\,)?)|(\\d*((\\.|\\,)\\d*)))\\s*(true\\s*)?(pt|pc|in|bp|cm|mm|dd|cc|sp|em|ex)\\b'
+  }
+  keywords: {
+    comment: '''Taken from the TeXBook. Not sorted.
+               at, bp, by, cc, cm, dd, depth, em, ex, fil, height, in, l, minus, mm, mu, pc, plus, pt, scaled, sp, spread, to, true, width
+             '''
+  }
+  texPrimitives: {
+    comment: 'This took a long time to write </joke>. Really though, dont even bother trying to edit it. Just add more primitives to the list in ../lib/resources, and recompile it.'
+    name: 'support.function.general.tex'
+    captures: 0: name: 'entity.name.function.primitive.latex'
+    match: '(\\\\)(((a(bove(displays(hortskip|kip)|withdelims)?|ccent|d(jdemerits|vance)|fter(assignment|group)|top(withdelims)?)|b(a(dness|selineskip|tchmode)|e(gingroup|lowdisplays(hortskip|kip))|inoppenalty|o(tmark|x(maxdepth)?)|rokenpenalty)|c(atcode|har(def)?|l(eaders|ose(in|out)|ubpenalty)|o(py|unt(def)?)|r(cr)?|sname)|d(ay|e(adcycles|f(ault(hyphenchar|skewchar))?|l(code|imiter(factor|shortfall)?))|i(men(def)?|s(cretionary|play(indent|limits|style|wid(owpenalty|th)))|vide)|oublehyphendemerits|p|ump)|e(def|lse|mergencystretch|nd(csname|group|input|linechar)?|qno|rr(help|message|or(contextlines|stopmode))|scapechar|very(cr|display|hbox|job|math|par|vbox)|x(hyphenpenalty|pandafter))|f(am|i(nalhyphendemerits|rstmark)?|loatingpenalty|ont(dimen|name)?|uturelet)|g(def|lobal(defs)?)|h(a(lign|ng(after|indent))|b(adness|ox)|f(il(l|neg)?|uzz)|o(ffset|ldinginserts)|rule|s(ize|kip|s)|t|yphen(ation|char|penalty))|i(f(ca(se|t)|dim|eof|false|h(box|mode)|inner|mmode|num|odd|true|v(box|mode|oid)|x)?|gnorespaces|mmediate|n(dent|put(lineno)?|sert(penalties)?|terlinepenalty))|jobname|kern|l(a(nguage|st(box|kern|penalty|skip))|ccode|e(aders|ft(hyphenmin|skip)?|qno|t)|i(mits|ne(penalty|skip(limit)?))|o(ng|oseness|wer(case)?))|m(a(g|rk|th(accent|bin|c(h(ar(def)?|oice)|lose|ode)|inner|o(p(en)?|rd)|punct|rel|surround)|xde(adcycles|pth))|e(aning|dmuskip|ssage)|kern|o(nth|ve(left|right))|skip|u(ltiply|skip(def)?))|n(ewlinechar|o(align|boundary|expand|indent|limits|ns(cript|topmode))|u(ll(delimiterspace|font)|mber))|o(mit|pen(in|out)|r|ut(er|put(penalty)?)|ver(fullrule|line|withdelims)?)|p(a(ge(depth|fil(l(lstretch|stretch)|stretch)|goal|s(hrink|tretch)|total)|r(fillskip|indent|s(hape|kip))?|tterns|using)|enalty|ostdisplaypenalty|re(display(penalty|size)|tolerance|v(depth|graf)))|r(a(dical|ise)|e(ad|l(ax|penalty))|ight(hyphenmin|skip)?|omannumeral)|s(cr(ipt(font|s(cript(font|style)|pace|tyle))|ollmode)|et(box|language)|fcode|h(ipout|ow(box(breadth|depth)?|lists|the)?)|k(ewchar|ip(def)?)|p(a(ce(factor|skip)|n)|ecial|lit(botmark|firstmark|maxdepth|topskip))|tring)|t(abskip|ext(font|style)|h(e|i(ckmuskip|nmuskip))|ime|o(ks(def)?|lerance|p(mark|skip))|racing(commands|lostchars|macros|o(nline|utput)|pa(ges|ragraphs)|restores|stats))|u(c(code|hyph)|n(derline|h(box|copy)|kern|penalty|skip|v(box|copy))|ppercase)|v(a(djust|lign)|b(adness|ox)|center|f(il(l|neg)?|uzz)|offset|rule|s(ize|kip|plit|s)|top)|w(d|idowpenalty|rite)|x(def|leaders|spaceskip)|year)(?=[^a-zA-Z@]))|(\\s|\\-|\\/))'
+  }
+  pdfTexPrimitives: {
+    comment: 'These dont apply on all engines, but I feel the names are specific enough and pdfLaTeX is used enough to justify it.'
+    name: 'support.function.general.tex'
+    captures: 0: name: 'entity.name.function.primitive.pdftex.latex'
+    match: '(\\\\)(pdf(o(ut(put|line)|bj(compresslevel)?)|m(inorversion|a(p(file|line)|tch)|ovechars|dfivesum)|c(o(mpresslevel|pyfont|lorstack(init)?)|atalog|reationdate)|d(e(cimaldigits|st(margin)?)|raftmode)|horigin|vorigin|p(age(width|height|sattr|attr|re(sources|f)|box)|k(resolution|mode)|r(otrudechars|ependkern|imitive)|xdimen)|i(n(fo(omitdate)?|clu(dechars|sion(errorlevel|copyfonts))|terwordspaceo(n|ff)|sertht)|gnoreddimen|mage(resolution|hicolor|applygamma|gamma))|s(uppress(ptexinfo|warning(dup(map|dest)|pagegroup))|t(artlink|rcmp)|et(randomseed|matrix)|ave(pos)?|hellescape)|n(ames|o(ligatures|builtintounicode|rmaldeviate))|t(ra(iler(id)?|cingfonts)|hread(margin)?|startthread|ex(banner|revision|version))|f(o(nt(expand|attr|name|objnum|size)|rcepagebox)|akespace|i(rstlineheight|le(moddate|size|dump)))|a(djust(spacing|interwordglue)|ppendkern|nnot)|un(i(queresname|formdeviate)|escapehex)|g(entounicode|lyphtounicode|amma)|l(ast(lin(edepth|k)|obj|x(form|image(colordepth|pages)?|pos)|annot|match|ypos)|i(nkmargin|teral))|e(achline(height|depth)|nd(link|thread)|scape(string|name|hex)|lapsedtime)|r(e(f(obj|x(form|image))|s(ettimer|tore)|tval)|andomseed)|x(form(name)?|image(bbox)?))|efcode|r(pcode|ightmarginkern)|l(pcode|e(ftmarginkern|tterspacefont))|tagcode|kn(b(scode|ccode)|accode)|s(tbscode|hbscode)|if(pdf(abs(num|dim)|primitive)|incsname)|quitvmode|vadjust)(?=[^a-zA-ZA@])'
+  }
+  unsortedPrimitives: {
+    comment: 'Im not sure which engine first defined these, but they are all primitives in LaTeX'
+    name: 'support.function.general.tex'
+    captures: 0: name: 'entity.name.function.primitive.latex'
+    match: '(\\\\)(un(less|expanded)|botmarks|c(urrent(if(type|branch|level)|group(level|type))|lubpenalties)|p(a(gediscards|rshape(dimen|indent|length))|r(otected|edisplaydirection))|m(u(toglue|expr)|arks|iddle)|d(i(splaywidowpenalties|mexpr)|etokenize)|f(ontchar(ic|dp|ht|wd)|irstmarks)|widowpenalties|t(racing(ifs|assigns|scantokens|nesting|groups)|opmarks)|i(f(fontchar|defined|csname)|nter(linepenalties|actionmode))|s(how(groups|tokens|ifs)|plit(firstmarks|botmarks|discards)|aving(vdiscards|hyphcodes)|cantokens)|glue(expr|tomu|s(hrink(order)?|tretch(order)?))|e(veryeof|TeX(version|revision))|readline|last(nodetype|linefit)|numexpr)(?=[^a-zA-Z@])'
+  }
+  doubleCaret: {
+    comment: 'Im not sure what these are called, but they seem to work (eg. ^^M is a linebreak)'
+    name: 'constant.character.latex'
+    match: '(\\\\)?\\^\\^(\\d+|.|$)'
+  }
+  text: {
+    begin: '((\\\\)text)\\s*(\\{)'
+    beginCaptures:
+      1: name: 'support.function.text.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex'
+    contentName: 'variable.parameter.latex'
+    patterns: [{ include: '$self' }]
+  }
+  constants: {
+    comment: 'Taken from language-latex'
+    match: '(\\\\)(?>text(?>s(?>terling|ixoldstyle|urd|e(?>ction|venoldstyle|rvicemark))|yen|n(?>ineoldstyle|umero|aira)|c(?>ircledP|o(?>py(?>left|right)|lonmonetary)|urrency|e(?>nt(?>oldstyle)?|lsius))|t(?>hree(?>superior|oldstyle|quarters(?>emdash)?)|i(?>ldelow|mes)|w(?>o(?>superior|oldstyle)|elveudash)|rademark)|interrobang(?>down)?|zerooldstyle|o(?>hm|ne(?>superior|half|oldstyle|quarter)|penbullet|rd(?>feminine|masculine))|d(?>i(?>scount|ed|v(?>orced)?)|o(?>ng|wnarrow|llar(?>oldstyle)?)|egree|agger(?>dbl)?|blhyphen(?>char)?)|uparrow|p(?>ilcrow|e(?>so|r(?>t(?>housand|enthousand)|iodcentered))|aragraph|m)|e(?>stimated|ightoldstyle|uro)|quotes(?>traight(?>dblbase|base)|ingle)|f(?>iveoldstyle|ouroldstyle|lorin|ractionsolidus)|won|l(?>not|ira|e(?>ftarrow|af)|quill|angle|brackdbl)|a(?>s(?>cii(?>caron|dieresis|acute|grave|macron|breve)|teriskcentered)|cutedbl)|r(?>ightarrow|e(?>cipe|ferencemark|gistered)|quill|angle|brackdbl)|g(?>uarani|ravedbl)|m(?>ho|inus|u(?>sicalnote)?|arried)|b(?>igcircle|orn|ullet|lank|a(?>ht|rdbl)|rokenbar)))(?!>[a-zA-Z@])'
+    captures:
+      0: name: 'constant.character.latex'
+      1: name: 'punctuation.definition.constant.latex'
+  }
+  numericConstants: {
+    comment: 'To match numbers of form 12, 1.2, etc.'
+    match: '(\\d*\\.\\d+|(\\d+\\.)?\\d+)'
+    name: 'constant.numeric.math.latex'
+  }
+  tikzOptions: {
+    comment: 'Specifically for the options that can be given to tikz. Placeholder for now'
+    match: '$impossible'
+  }
+
+# Unfortunate necessity (mainly making a unique grammar for each coding language)
+  mintGeneric: {
+    comment: 'A catch all for any other languages.'
+    name: 'meta.environment.embedded.$11.latex'
+    contentName: 'markup.raw.verbatim.latex'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*)(\\]))?(\\{)([a-zA-Z]*)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8:
+        name: 'variable.parameter.optional.function.environment.latex'
+        patterns: [{ include: '$self' }]
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.$11.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(\\4)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+  }
+  mintPython: {
+    name: 'meta.environment.embedded.python.latex'
+    contentName: 'source.embedded.python'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*?)(\\]))?(\\{)(python3?|py3?)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.minted.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8: name: 'variable.parameter.optional.function.environment.latex'
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.python.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(minted)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.python' }]
+  }
+  mintJavascript: {
+    name: 'meta.environment.embedded.js.latex'
+    contentName: 'source.embedded.js'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*?)(\\]))?(\\{)(js)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.minted.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8: name: 'variable.parameter.optional.function.environment.latex'
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.js.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(minted)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.js' }]
+  }
+  mintJSON: {
+    name: 'meta.environment.embedded.json.latex'
+    contentName: 'source.embedded.json'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*?)(\\]))?(\\{)(json)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.minted.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8: name: 'variable.parameter.optional.function.environment.latex'
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.json.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(minted)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.json' }]
+  }
+  mintCoffeescript: {
+    name: 'meta.environment.embedded.coffee.latex'
+    contentName: 'source.embedded.coffee'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*?)(\\]))?(\\{)(coffee(?:\\-?script)?)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.minted.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8: name: 'variable.parameter.optional.function.environment.latex'
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.coffee.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(minted)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.coffee' }]
+  }
+  mintCSS: {
+    name: 'meta.environment.embedded.css.latex'
+    contentName: 'source.embedded.css'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*?)(\\]))?(\\{)(css)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.minted.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8: name: 'variable.parameter.optional.function.environment.latex'
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.css.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(minted)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.css' }]
+  }
+  mintLess: {
+    name: 'meta.environment.embedded.less.latex'
+    contentName: 'source.embedded.less'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*?)(\\]))?(\\{)(less)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.minted.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8: name: 'variable.parameter.optional.function.environment.latex'
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.less.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(minted)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.less' }]
+  }
+  mintXML: {
+    name: 'meta.environment.embedded.xml.latex'
+    contentName: 'source.embedded.xml'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*?)(\\]))?(\\{)(xml)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.minted.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8: name: 'variable.parameter.optional.function.environment.latex'
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.xml.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(minted)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.xml' }]
+  }
+  mintRuby: {
+    name: 'meta.environment.embedded.ruby.latex'
+    contentName: 'source.embedded.ruby'
+    begin: '((\\\\)begin)(\\{)((minted)\\*?)(\\})(?:(\\[)(.*?)(\\]))?(\\{)(ruby|rb)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex'
+      2: name: 'punctuation.definition.function.begin.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.minted.latex'
+      # 5: Used for meta scope name (basically just non starred version)
+      6: name: 'punctuation.definition.arguments.end.latex'
+      7: name: 'punctuation.definition.arguments.optional.begin.latex'
+      8: name: 'variable.parameter.optional.function.environment.latex'
+      9: name: 'punctuation.definition.arguments.optional.end.latex'
+      10: name: 'punctuation.definition.arguments.begin.latex'
+      11: name: 'variable.parameter.language.ruby.latex'
+      12: name: 'punctuation.definition.arguments.end.latex'
+    end: '((\\\\)end)(\\{)(minted)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex'
+      2: name: 'punctuation.definition.function.latex'
+      3: name: 'punctuation.definition.arguments.begin.latex'
+      4: name: 'variable.parameter.function.latex'
+      5: name: 'punctuation.definition.arguments.end.latex'
+    patterns: [{ include: 'source.ruby' }]
+  }
+
+# Removed
+
+  makeAtSomething: {
+    comment: 'Matches the makeat(letter|other) commands so that they get custom highlighting (because @ is now a character)'
+    contentName: 'markup.raw.verbatim.latex' # To make user aware of its effect
+    begin: '(\\\\)makeatletter\\b'
+    beginCaptures:
+      0: name: 'support.function.makeat.latex'
+    end: '(\\\\)makeatother\\b'
+    endCaptures:
+      0: name: 'support.function.makeat.latex'
+    patterns: [{ include: '$self'}]
   }

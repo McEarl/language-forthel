@@ -1,0 +1,71 @@
+# This file was adopted from https://github.com/Aerijo/language-latex2e.git
+# under the terms of the MIT license:
+#
+# Copyright (c) 2017 Aerijo
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+
+scopeName: 'text.tex.latex.tikz'
+name: 'LaTeX TikZ'
+fileTypes: [
+  'tikz'
+]
+# firstLineMatch: '\\\\begin\\{'
+limitLineLength: false
+
+patterns: [
+  { include: '#coordinate' }
+  { include: '#options' }
+  { include: '#pathDescriptor' }
+  {
+    match: '\\$'
+    name: 'markup.other.calc.tikz'
+  }
+  {
+    comment: 'This prevents .tikz files being scoped as LaTeX & embedded with TikZ'
+    match: '((\\\\)(begin|end))(\\{)(tikzpicture)(\\})'
+    captures:
+      1: name: 'support.function.environment.$3.latex'
+      2: name: 'punctuation.definition.function.$3.latex'
+      # 3: For knowing if the capture is `begin` or `end`
+      4: name: 'punctuation.definition.arguments.begin.latex'
+      5: name: 'variable.parameter.environment.tikzpicture.latex'
+      6: name: 'punctuation.definition.arguments.end.latex'
+  }
+  { include: 'text.tex.latex' }
+]
+
+
+repository:
+  # General structures that apply anywhere
+  coordinate: {
+    comment: 'The contents is either a point, or name (which refers to a point).'
+    begin: '\\('
+    end: '\\)|$'
+    beginCaptures: 0: name: 'punctuation.definition.begin.coordinate.tikz'
+    endCaptures: 0: name: 'punctuation.definition.end.coordinate.tikz'
+    contentName:'markup.other.coordinate.tikz'
+    patterns: [{ include: '$self' }]
+  }
+  options: {
+    begin: '\\['
+    beginCaptures: 0: name: 'punctuation.definition.argument.optional.begin.tikz'
+    end: '\\]'
+    endCaptures: 0: name: 'punctuation.definition.argument.optional.end.tikz'
+    contentName: 'variable.parameter.optional.tikz'
+    patterns: [{ include: '#text.tex.latex.tikz' }]
+  }
+  pathDescriptor: {
+    comment: 'For the constructions like --, -|, |-, etc.'
+    name: 'punctuation.path.tikz'
+    match: '(--|-\\||\\|-)'
+  }
