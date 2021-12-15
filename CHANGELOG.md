@@ -2,6 +2,18 @@
 
 
 
+## 2.0.0
+
+### Changed:
+
+* This package lo longer depends on `language-latex2e`. Instead the relevant
+  files of `language-latex2e` are adoped directly as part of this package.
+* Snippets for instructions are removed.
+* LaTeX snippets are removed. You can for instance use the package
+  `autocomplete-latex` instead.
+
+
+
 ## 1.2.9
 
 ### Fixed:
