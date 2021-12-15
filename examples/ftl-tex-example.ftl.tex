@@ -1,0 +1,26 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{naproche}
+
+\begin{document}
+  \section{Russell's Paradox}
+
+  Russell's paradox is the assertion that every set theory that contains an
+  unrestricted comprehension principle leads to contradictions.
+  In terms of \textit{sets} and \textit{classes} it can be phrased as follows.
+
+  \begin{forthel}
+    \begin{theorem}[Russell's Paradox]\label{russell}
+      If every class is a set then we have a contradiction.
+    \end{theorem}
+    \begin{proof}
+      Assume that every class is a set.
+      Define \[ R = \class{x | \text{$x$ is a set such that $x \notin x$}}. \]
+      Then $R$ is a set.
+      Hence \[ R \in R \iff R \notin R. \]
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+\end{document}
