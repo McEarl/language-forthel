@@ -5,7 +5,8 @@
   "keywords": [
     "forthel",
     "ftl",
-    "naproche"
+    "naproche",
+    "latex"
   ],
   "author": "Marcel Schütz",
   "repository": {
@@ -22,7 +23,6 @@
   },
   "package-deps": [
     {
-      "name": "language-latex2e",
       "minimumVersion": "0.18.1"
     }
   ]
