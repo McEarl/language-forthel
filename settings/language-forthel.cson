@@ -4,7 +4,7 @@
     'softTabs': true
     'preferredLineLength': 80
     'increaseIndentPattern': '(\\b([Pp]roof|[Cc]ase)\\b)|(\\b[Ll]et\\b\\ +\\bus\\b|\\b[Ww]e\\b\\ +\\bcan\\b)'
-    'decreaseIndentPattern': '\\b([Ee]nd|[Qq][Ee][Dd]|[Oo]bvious|[Tt]rivial)\\b'
+    'decreaseIndentPattern': '\\b(E[Nn][Dd]|Q[Ee][Dd]|Obvious|Trivial)\\b'
 
 '.text.tex.ftl-tex':
   'editor':
