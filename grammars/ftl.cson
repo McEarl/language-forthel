@@ -2,72 +2,116 @@ scopeName: 'source.ftl'
 name: 'ForTheL'
 fileTypes: [ 'ftl' ]
 patterns: [
-  {
+  { include : '#comment' }
+  { include : '#instruction' }
+  { include : '#declaration' }
+  { include : '#keyword' }
+  { include : '#tex' }
+]
+repository:
+  comment: {
     comment: 'comments'
     match: '#.*$'
     name: 'comment.ftl'
   }
-  {
-    comment: 'argument(s) instructions'
+  instruction: {
+    patterns: [
+      { include: '#argumentInstruction' }
+      { include: '#flagInstruction' }
+      { include: '#limitInstruction' }
+      { include: '#commandInstruction' }
+      { include: '#dropInstruction' }
+    ]
+  }
+  argumentInstruction: {
     match: '\\[\\ *(read|library|prover|provers|synonym)\\ *(.*?)\\ *\\]'
-    name: 'variable.language.ftl'
+    name: 'variable.language.instruction.argument.ftl'
   }
-  {
-    comment: 'flag instructions'
-    match: '\\[\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation)\\ *(on|off|yes|no)\\ *\\]'
-    name: 'variable.language.ftl'
+  flagInstruction: {
+    match: '\\[\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|unfold|unfoldsf|unfoldlow|unfoldlowsf|translation|tex|checkconsistency)\\ *(on|off|yes|no)\\ *\\]'
+    name: 'variable.language.instruction.flag.ftl'
   }
-  {
-    comment: 'limit instructions'
+  limitInstruction: {
     match: '\\[\\ *(timelimit|depthlimit|checktime|checkdepth)\\ *[0-9]+\\ *\\]'
-    name: 'variable.language.ftl'
+    name: 'variable.language.instruction.limit.ftl'
   }
-  {
-    comment: 'command instructions'
+  commandIstruction: {
     match: '\\[\\ *(exit|quit|thesis|context|filter|rules)\\ *\\]'
-    name: 'variable.language.ftl'
+    name: 'variable.language.instruction.command.ftl'
   }
-  {
-    comment: 'drop instructions'
-    match: '\\[\\ */\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|ontored|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation|timelimit|depthlimit|checktime|checkdepth)\\ *\\]'
-    name: 'variable.language.ftl'
+  dropInstruction: {
+    match: '\\[\\ */\\ *(prove|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|unfold|unfoldsf|unfoldlow|unfoldlowsf|checkontored|translation|tex|checkconsistency|timelimit|depthlimit|checktime|checkdepth)\\ *\\]'
+    name: 'variable.language.instruction.drop.ftl'
   }
-  {
-    comment: 'top-level section'
+  keyword: {
+    patterns: [
+      { include: '#topLevelSection' }
+      { include: '#lowLevelTheorem' }
+      { include: '#assumption' }
+      { include: '#declaration' }
+      { include: '#choice' }
+      { include: '#lowLevelDefinition' }
+      { include: '#proofStart' }
+      { include: '#proofEnd' }
+      { include: '#confirmation' }
+      { include: '#case' }
+      { include: '#lowLevelCase' }
+      { include: '#texSymbol' }
+    ]
+  }
+  topLevelSection: {
     match: '([Dd]efinition|[Ss]ignature|[Aa]xiom|[Tt]heorem|[Ll]emma|[Pp]roposition|[Cc]orollary)(\\ [a-zA-Z0-9\\_\\ ]*)?(\\.)'
     captures:
-      1: name: 'entity.name.section.ftl'
+      1: name: 'entity.name.section.toplevelsection.ftl'
   }
-  {
-    comment: 'case (low-level function definition)'
-    match: '(\\b[Cc]ase\\b)(.*?)(-\\ *>)'
-    captures:
-      1: name: 'support.function.ftl'
-  }
-  {
-    comment: 'let us show'
+  lowLevelTheorem: {
     match: '(\\b[Ll]et\\b\\ +\\bus\\b|\\b[Ww]e\\b\\ +\\bcan\\b)\\ +\\bshow\\b'
-    name: 'entity.name.section.ftl'
+    name: 'entity.name.section.lowleveltheorem.ftl'
   }
-  {
-    comment: 'let, assume, suppose, presume, take, choose, consider, define'
-    match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume|[Tt]ake|[Cc]hoose|[Cc]onsider|[Dd]efine)\\b'
-    name: 'support.function.ftl'
+  assumption: {
+    match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume)\\b'
+    name: 'support.function.assumption.ftl'
   }
-  {
-    comment: 'proofs'
+  declaration: {
+    match: '(\\bdenote\\b)|(\\bstand\\b\\ +\\bfor\\b)'
+    name: 'support.function.declaration.ftl'
+  }
+  choice: {
+    match: '\\b([Tt]ake|[Cc]hoose|[Cc]onsider|[Dd]efine)\\b'
+    name: 'support.function.choice.ftl'
+  }
+  lowLevelDefinition: {
+    match: '\\b[Dd]efine\\b'
+    name: 'support.function.lowleveldefinition.ftl'
+  }
+  proofStart: {
     match: '(\\b[Pp]roof\\b)((\\ +by\\ +)(case\\ +analysis|(induction\\ +on\\ +(.*?))|contradiction))?(\\ *\\.)'
     captures:
-      1: name: 'entity.name.section.ftl'
+      1: name: 'entity.name.section.proofstart.ftl'
   }
-  {
-    comment: 'indeed, case, end, qed, obvious, trivial'
-    match: '\\b([Ii]ndeed|[Cc]ase|[Ee]nd|[Qq]ed|[Oo]bvious|[Tt]rivial)\\b'
-    name: 'entity.name.section.ftl'
+  proofEnd: {
+    comment: '''
+      These keywords should begin with an upper-case letter to prevent
+      highlighting them in case they are nouns or adjective as in "an end of a
+      functor" or "a trivial divisor of a number".
+    '''
+    match: '\\b(E[Nn][Dd]|Q[Ee][Dd]|Obvious|Trivial)\\b'
+    name: 'entity.name.section.proofend.ftl'
   }
-  {
-    comment: 'LaTeX commands'
+  confirmation: {
+    match: '\\bIndeed\\b'
+    name: 'entity.name.section.confirmation.ftl'
+  }
+  case: {
+    match: '\\bCase\\b'
+    name: 'entity.name.section.case.ftl'
+  }
+  lowLevelCase: {
+    match: '(\\b[Cc]ase\\b)(.*?)(-\\ *>)'
+    captures:
+      1: name: 'support.function.lowlevelcase.ftl'
+  }
+  texSymbol: {
     match: '\\\\\\b[a-zA-Z0-9]+\\b'
-    name: 'keyword.other.ftl'
+    name: 'keyword.other.tex.ftl'
   }
-]
