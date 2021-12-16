@@ -2,6 +2,13 @@
 
 
 
+## 2.0.1
+
+### Changed:
+
+  * Just some internal changes on the directory structure
+
+
 ## 2.0.0
 
 ### Changed:
