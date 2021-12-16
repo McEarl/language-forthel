@@ -1,0 +1,292 @@
+scopeName: 'text.tex.latex.ftl'
+name: 'FTL-TeX'
+fileTypes: [ 'ftl.tex' ]
+limitLineLength: false
+maxTokensPerLine: 300
+
+patterns: [
+  {
+    name: 'meta.environment.forthel.latex.ftl'
+    begin: '((\\\\)begin)(\\{)(forthel)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex.ftl'
+      2: name: 'punctuation.definition.function.begin.latex.ftl'
+      3: name: 'punctuation.definition.arguments.begin.latex.ftl'
+      4: name: 'variable.parameter.function.latex.ftl'
+      5: name: 'punctuation.definition.arguments.end.latex.ftl'
+    end: '((\\\\)end)(\\{)(\\4)(\\})|(?=})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex.ftl'
+      2: name: 'punctuation.definition.function.latex.ftl'
+      3: name: 'punctuation.definition.arguments.begin.latex.ftl'
+      4: name: 'variable.parameter.function.latex.ftl'
+      5: name: 'punctuation.definition.arguments.end.latex.ftl'
+    patterns: [
+      { include: 'text.tex.latex#lineComment' }
+      { include: '#ftlDenote' }
+      { include: '#ftlInlineMathMode' }
+      { include: '#ftlInstruction' }
+      { include: '#ftlTopLevelSection' }
+      { include: '#ftlProof' }
+    ]
+  }
+  { include: 'text.tex.latex' }
+]
+
+repository:
+
+  ftlTopLevelSection: {
+    begin: '(((\\\\)begin)\\s*(\\{)(definition|signature|axiom|theorem|proposition|lemma|corollary)(\\}))\\s*((\\[)([^\\]]+)(\\]))?(((\\\\)label)\\s*(\\{)([a-zA-Z0-9_]+)(\\}))?'
+    beginCaptures:
+      # "\begin{...}":
+      2: name: 'support.function.environment.begin.latex.ftl'
+      3: name: 'punctuation.definition.function.begin.latex.ftl'
+      4: name: 'punctuation.definition.arguments.begin.latex.ftl'
+      5: name: 'variable.parameter.function.latex.ftl'
+      6: name: 'punctuation.definition.arguments.end.latex.ftl'
+      # "[...]":
+      8: name: 'punctuation.definition.arguments.optional.begin.latex.ftl'
+      9: {
+        name: 'variable.parameter.optional.function.environment.latex.ftl'
+        patterns: [{ include: '$self' }]
+      }
+      10: name: 'punctuation.definition.arguments.optional.end.latex.ftl'
+      # "\label{...}":
+      12: name: 'keyword.control.label.latex.ftl'
+      13: name: 'punctuation.definition.keyword.latex.ftl'
+      14: name: 'punctuation.definition.arguments.begin.latex.ftl'
+      15: name: 'constant.other.reference.latex.ftl'
+      16: name: 'punctuation.definition.arguments.end.latex.ftl'
+    end: '((\\\\)end)\\s*(\\{)(\\5)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex.ftl'
+      2: name: 'punctuation.definition.function.latex.ftl'
+      3: name: 'punctuation.definition.arguments.begin.latex.ftl'
+      4: name: 'variable.parameter.function.latex.ftl'
+      5: name: 'punctuation.definition.arguments.end.latex.ftl'
+    patterns: [
+      { include: 'text.tex.latex#lineComment' }
+      { include: '#ftlDisplayMathMode' }
+      { include: '#ftlInlineMathMode' }
+      { include: '#doubleBackslash' }
+      { include: '#ftlAssume' }
+    ]
+  }
+  ftlProof: {
+    begin: '((\\\\)begin)(\\{)(proof)(\\})'
+    beginCaptures:
+      1: name: 'support.function.environment.begin.latex.ftl'
+      2: name: 'punctuation.definition.function.begin.latex.ftl'
+      3: name: 'punctuation.definition.arguments.begin.latex.ftl'
+      4: name: 'variable.parameter.function.latex.ftl'
+      5: name: 'punctuation.definition.arguments.end.latex.ftl'
+    end: '((\\\\)end)(\\{)(\\4)(\\})'
+    endCaptures:
+      1: name: 'support.function.environment.end.latex.ftl'
+      2: name: 'punctuation.definition.function.latex.ftl'
+      3: name: 'punctuation.definition.arguments.begin.latex.ftl'
+      4: name: 'variable.parameter.function.latex.ftl'
+      5: name: 'punctuation.definition.arguments.end.latex.ftl'
+    patterns: [
+      { include: 'text.tex.latex#lineComment' }
+      { include: 'text.tex.latex#doubleBackslash' }
+      { include: '#ftlDisplayMathMode' }
+      { include: '#ftlInlineMathMode' }
+      { include: '#ftlInstruction' }
+      { include: '#doubleBackslash' }
+      { include: '#ftlReference' }
+      { include: '#nameref' }
+      { include: '#instruction' }
+      { include: '#ftlLowLevelTheorem' }
+      { include: '#ftlAssume' }
+      { include: '#ftlTake' }
+      { include: '#ftlDefine' }
+      { include: '#ftlLowLevelProof' }
+    ]
+  }
+  ftlReference: {
+    begin: '((\\\\)(ref|nameref))\\s*(\\{)'
+    beginCaptures:
+      1: name: 'keyword.control.label.latex.ftl'
+      2: name: 'punctuation.definition.keyword.latex.ftl'
+      4: name: 'punctuation.definition.arguments.begin.latex.ftl'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex.ftl'
+    name: 'constant.other.reference.latex.ftl'
+  }
+  ftlInstruction: {
+    patterns: [
+      { include: '#ftlArgumentInstr' }
+      { include: '#ftlFlagInstr' }
+      { include: '#ftlLimitInstr' }
+      { include: '#ftlCommandInstr' }
+      { include: '#ftlDropInstr' }
+      { include: '#ftlInvalidInstr' }
+    ]
+  }
+  ftlArgumentInstr: {
+    match: '(\\[)(\\ *)(read|readtex|library|prover|provers|synonym)(\\ +)((((\\\\)path)(\\{)([^\\}]+)(\\})([^\\]\\ ]*))|([^\\]]+))(\\ *)(\\])'
+    captures:
+      0:  name: 'variable.language.instruction.latex.ftl'
+      3:  name: 'variable.language.instruction.argument.latex.ftl'
+      7:  name: 'entity.name.function.primitive.latex.ftl'          # "\path"
+      8:  name: 'punctuation.definition.function.begin.latex.ftl'   # The backslash in "\path"
+      9:  name: 'punctuation.definition.function.begin.latex.ftl'   # "{"
+      10: name: 'variable.parameter.function.latex.ftl'             # The actual argument
+      11: name: 'punctuation.definition.arguments.end.latex.ftl'    # "}"
+      12: name: 'invalid.illegal.latex.ftl'                         # Any non-whitespace between the closing "}" of "\path{...}" and the closing "]" of the instrucion
+      13: name: 'variable.parameter.function.latex.ftl'             # The actual argument (when not within "\path{...}")
+  }
+  ftlFlagInstr: {
+    match: '(\\[)(\\ *)(prove|checkconsistency|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|unfold|unfoldsf|unfoldlow|unfoldlowsf|translation|tex)(\\ +)((on|off|yes|no)|([^\\]\\ ]*))(\\ *)(\\])'
+    captures:
+      0: name: 'variable.language.instruction.latex.ftl'
+      3: name: 'variable.language.instruction.flag.latex.ftl'
+      6: name: 'variable.parameter.function.latex.ftl'          # Any valid argument
+      7: name: 'invalid.illegal.latex.ftl'                      # Any invalid argument
+  }
+  ftlLimitInstr: {
+    match: '(\\[)(\\ *)(timelimit|depthlimit|checktime|checkdepth)(\\ +)(([0-9]+)|([^\\]\\ ]*))(\\ *)(\\])'
+    captures:
+      0: name: 'variable.language.instruction.latex.ftl'
+      3: name: 'variable.language.instruction.limit.latex.ftl'
+      6: name: 'variable.parameter.function.latex.ftl'          # Any valid argument
+      7: name: 'invalid.illegal.latex.ftl'                      # Any invalid argument
+  }
+  ftlCommandInstr: {
+    match: '(\\[)(\\ *)(exit|quit|thesis|context|filter|rules)(\\ *)(\\])'
+    captures:
+      0: name: 'variable.language.instruction.latex.ftl'
+      3: name: 'variable.language.instruction.command.latex.ftl'
+  }
+  ftlDropInstr: {
+    match: '(\\[)(\\ *)(/(\\ *)(prove|checkconsistency|check|symsign|info|thesis|filter|skipfail|flat|printgoal|printsection|printcheck|printunfold|printreason|printprover|printfulltask|dump|printsimp|printthesis|unfold|unfoldsf|unfoldlow|unfoldlowsf|translation|tex|timelimit|depthlimit|checktime|checkdepth))(\\ *)(\\])'
+    captures:
+      0: name: 'variable.language.instruction.latex.ftl'
+      3: name: 'variable.language.instruction.drop.latex.ftl'
+  }
+  ftlAssume: {
+    match: '\\b([Ll]et|[Aa]ssume|[Ss]uppose|[Pp]resume)\\b'
+    name: 'keyword.control.ftlkeyword.assume.latex.ftl'
+  }
+  ftlDenote: {
+    match: '(\\b[Ll]et\\b)|(\\bdenote\\b)|(\\bstand\\b\\ +\\bfor\\b)'
+    name: 'keyword.control.ftlkeyword.denote.latex.ftl'
+  }
+  ftlTake: {
+    match: '\\b([Tt]ake|[Cc]hoose|[Cc]onsider)\\b'
+    name: 'keyword.control.ftlkeyword.take.latex.ftl'
+  }
+  ftlDefine: {
+    match: '\\b([Dd]efine)\\b'
+    name: 'keyword.control.ftlkeyword.define.latex.ftl'
+  }
+  ftlLowLevelProof: {
+    comment: '''
+      These keywords should begin with an upper-case letter to prevent
+      highlighting them in case they are nouns or adjective as in "an end of a
+      functor" or "a trivial divisor of a number".
+    '''
+    match: '\\b(Proof|Case|Indeed|Q[Ee][Dd]|E[Nn][Dd]|Obvious|Trivial)\\b'
+    name: 'entity.name.section.ftlkeyword.lowlevelproof.latex.ftl'
+  }
+  ftlLowLevelTheorem: {
+    match: '((\\b[Ll]et\\b\\ +\\bus\\b)|(\\b[Ww]e\\b\\ +\\bcan\\b))\\ +(\\b(show|prove|demonstrate)\\b)'
+    name: 'entity.name.section.ftlkeyword.lowleveltheoremlatex'
+  }
+  ftlFunctionChoice: {
+    match: '\\b([Dd]efine|[Cc]hoose)\\b'
+    name: 'keyword.control.ftlkeyword.functionchoice.latex.ftl'
+  }
+  ftlClass: {
+    comment: 'class term pattern'
+    begin: '((\\\\)class)\\s*(\\{)'
+    beginCaptures:
+      1: name: 'support.function.text.latex.ftl'
+      2: name: 'punctuation.definition.function.latex.ftl'
+      3: name: 'punctuation.definition.arguments.begin.latex.ftl'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex.ftl'
+    patterns: [
+      { include: '#ftlProofText' }
+      { include: '#ftlClassText' }
+      { include: 'text.tex.latex#controlWord' }
+    ]
+  }
+  ftlProofText: {
+    comment: 'modified text environment for low-level function definitions'
+    begin: '((\\\\)text)\\s*(\\{)'
+    beginCaptures:
+      1: name: 'support.function.text.latex.ftl'
+      2: name: 'punctuation.definition.function.latex.ftl'
+      3: name: 'punctuation.definition.arguments.begin.latex.ftl'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex.ftl'
+    contentName: 'variable.parameter.latex.ftl'
+    patterns: [
+      { include: '#ftlInlineMathMode' }
+      { include: '#ftlFunctionChoice' }
+    ]
+  }
+  ftlClassText: {
+    comment: 'modified text environment for low-level function definitions'
+    begin: '((\\\\)classtext)\\s*(\\{)'
+    beginCaptures:
+      1: name: 'support.function.text.latex.ftl'
+      2: name: 'punctuation.definition.function.latex.ftl'
+      3: name: 'punctuation.definition.arguments.begin.latex.ftl'
+    end: '\\}'
+    endCaptures:
+      0: name: 'punctuation.definition.arguments.end.latex.ftl'
+    contentName: 'variable.parameter.latex.ftl'
+    patterns: [
+      { include: '#ftlInlineMathMode' }
+    ]
+  }
+  ftlInlineMathMode: {
+    comment: 'modified inline math mode for low-level function definitions'
+    contentName: 'markup.other.math.inline.latex.ftl'
+    begin: '\\$'
+    beginCaptures:
+      0: name: 'markup.other.math.inline.begin.latex.ftl'
+    end: '\\$'
+    endCaptures:
+      0: name: 'markup.other.math.inline.end.latex.ftl'
+    patterns: [
+      {
+        comment: 'When in inline math, the exit can only be $ or \)'
+        name: 'invalid.illegal.latex.ftl'
+        match: '(\\\\(\\[|\\(|\\)))'
+      }
+      { include: '#ftlProofText' }
+      { include: '#ftlClass' }
+      { include: 'text.tex.latex#doubleBackslash' }
+      { include: 'text.tex.latex#controlWord' }
+    ]
+  }
+  ftlDisplayMathMode: {
+    comment: 'modified display math mode for low-level function definitions'
+    contentName: 'markup.other.math.display.latex.ftl'
+    begin: '(\\$\\$)|(\\\\\\[)'
+    beginCaptures:
+      0: name: 'markup.other.math.display.begin.latex.ftl'
+      1: name: 'invalid.deprecated.latex.ftl'
+    end: '(\\$\\$)|(\\\\\\])'
+    endCaptures:
+      0: name: 'markup.other.math.display.end.latex.ftl'
+      1: name: 'invalid.deprecated.latex.ftl'
+    patterns: [
+      {
+        comment: 'When in display math, the exit can only be $$ or \]'
+        name: 'invalid.illegal.latex.ftl'
+        match: '(?<=[^\\\\])(\\$)(?=[^\\$])|(\\\\(\\[|\\(|\\)))'
+      }
+      { include: '#ftlProofText' }
+      { include: '#ftlClass' }
+      { include: 'text.tex.latex#doubleBackslash' }
+      { include: 'text.tex.latex#controlWord' }
+    ]
+  }
