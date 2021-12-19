@@ -4,9 +4,9 @@
 
 ## 2.0.2
 
-### Fixed:
+### Fixed
 
-  * Unbalanced braces in ForTheL environments
+  * Wrong version numbers in CHANGELOG
 
 
 ## 2.0.1
@@ -14,6 +14,11 @@
 ### Changed:
 
   * Just some internal changes on the directory structure
+
+
+### Fixed:
+
+  * Unbalanced braces in ForTheL environments
 
 
 ## 2.0.0
