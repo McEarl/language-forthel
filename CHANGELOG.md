@@ -2,6 +2,13 @@
 
 
 
+## 2.0.2
+
+### Fixed:
+
+  * Unbalanced braces in ForTheL environments
+
+
 ## 2.0.1
 
 ### Changed:
