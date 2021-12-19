@@ -210,6 +210,7 @@ repository:
     endCaptures:
       0: name: 'punctuation.definition.arguments.end.latex.ftl'
     patterns: [
+      { include: 'text.tex.latex#metaOpenBrace' }
       { include: '#ftlProofText' }
       { include: '#ftlClassText' }
       { include: 'text.tex.latex#controlWord' }
@@ -261,6 +262,7 @@ repository:
         name: 'invalid.illegal.latex.ftl'
         match: '(\\\\(\\[|\\(|\\)))'
       }
+      { include: 'text.tex.latex#metaOpenBrace' }
       { include: '#ftlProofText' }
       { include: '#ftlClass' }
       { include: 'text.tex.latex#doubleBackslash' }
@@ -284,6 +286,7 @@ repository:
         name: 'invalid.illegal.latex.ftl'
         match: '(?<=[^\\\\])(\\$)(?=[^\\$])|(\\\\(\\[|\\(|\\)))'
       }
+      { include: 'text.tex.latex#metaOpenBrace' }
       { include: '#ftlProofText' }
       { include: '#ftlClass' }
       { include: 'text.tex.latex#doubleBackslash' }
