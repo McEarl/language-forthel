@@ -2,6 +2,13 @@
 
 
 
+## 2.0.3
+
+### Fixed
+
+  * Wrong highlighting when using escaped braces
+
+
 ## 2.0.2
 
 ### Fixed
