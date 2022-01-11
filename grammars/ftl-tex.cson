@@ -1,9 +1,4 @@
 scopeName: 'text.tex.latex.ftl'
-name: 'FTL-TeX'
-fileTypes: [ 'ftl.tex' ]
-limitLineLength: false
-maxTokensPerLine: 300
-
 patterns: [
   {
     name: 'meta.environment.forthel.latex.ftl'
@@ -32,9 +27,7 @@ patterns: [
   }
   { include: 'text.tex.latex' }
 ]
-
 repository:
-
   ftlTopLevelSection: {
     begin: '(((\\\\)begin)\\s*(\\{)(definition|signature|axiom|theorem|proposition|lemma|corollary)(\\}))\\s*((\\[)([^\\]]+)(\\]))?(((\\\\)label)\\s*(\\{)([a-zA-Z0-9_]+)(\\}))?'
     beginCaptures:
