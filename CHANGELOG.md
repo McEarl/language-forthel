@@ -2,6 +2,14 @@
 
 
 
+## 2.0.4
+
+### Fixed
+
+  * Wrong scope in LaTeX settings
+  * `.ftl.tex` not being detected as `.tex` files
+
+
 ## 2.0.3
 
 ### Fixed
