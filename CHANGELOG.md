@@ -2,6 +2,19 @@
 
 
 
+## 2.0.5
+
+### Changed
+
+  * There is no predefined preferred line length any longer
+
+
+### Fixed
+
+  * No hihglighing of comments in math mode
+
+
+
 ## 2.0.4
 
 ### Fixed
