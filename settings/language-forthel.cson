@@ -10,6 +10,5 @@
   'editor':
     'autoIndentOnPaste': true
     'softTabs': true
-    'preferredLineLength': 80
     'increaseIndentPattern': '(\\\\begin)'
     'decreaseIndentPattern': '(\\\\end)'
