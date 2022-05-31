@@ -257,6 +257,7 @@ repository:
         name: 'invalid.illegal.latex.ftl'
         match: '(\\\\(\\[|\\(|\\)))'
       }
+      { include: 'text.tex.latex#lineComment' }
       { include: '#escapedBrace' }
       { include: 'text.tex.latex#metaOpenBrace' }
       { include: 'text.tex.latex#metaCloseBrace' }
@@ -283,6 +284,7 @@ repository:
         name: 'invalid.illegal.latex.ftl'
         match: '(?<=[^\\\\])(\\$)(?=[^\\$])|(\\\\(\\[|\\(|\\)))'
       }
+      { include: 'text.tex.latex#lineComment' }
       { include: '#escapedBrace' }
       { include: 'text.tex.latex#metaOpenBrace' }
       { include: 'text.tex.latex#metaCloseBrace' }
