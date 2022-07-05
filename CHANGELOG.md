@@ -2,6 +2,14 @@
 
 
 
+## 2.0.6
+
+### Fixed
+
+  * References in top-level section bodies (FTL-TeX)
+
+
+
 ## 2.0.5
 
 ### Changed

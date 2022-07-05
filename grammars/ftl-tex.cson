@@ -63,6 +63,7 @@ repository:
       { include: '#ftlInlineMathMode' }
       { include: '#doubleBackslash' }
       { include: '#ftlAssume' }
+      { include: '#ftlReference' }
     ]
   }
   ftlProof: {
