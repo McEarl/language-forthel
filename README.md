@@ -1,7 +1,7 @@
 # Syntax highlighting for ForTheL and LaTeX
 
 This package provides syntax highlighting for `ftl` and `tex` files (and several
-other LaTeX-related file types, including `ftl.tex`) in [Atom][1].
+other LaTeX-related file types, including `ftl.tex`) in [Pulsar][1].
 
 It is largely based on [language-latex2e][2].
 
@@ -20,5 +20,5 @@ It is largely based on [language-latex2e][2].
 
 
 
-[1]: <https://atom.io/>
-[2]: <https://atom.io/packages/language-latex2e>
+[1]: <https://pulsar-edit.dev/>
+[2]: <https://web.pulsar-edit.dev/packages/language-latex2e>
